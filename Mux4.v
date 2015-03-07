@@ -18,7 +18,7 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module Mux2
+module Mux4
   #(
 	 parameter WIDTH = 32   //Ancho de la direccion de memoria.
 	 )
