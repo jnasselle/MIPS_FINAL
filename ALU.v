@@ -39,38 +39,41 @@ module ALU(
 	reg [31:0] AluRes;
 	
 	//Aritmeticas
-	localparam ADD = 4'b0000;
-	localparam ADDU =;
-	localparam SUB = 4'b1110;
-	localparam SUBU =;
+	localparam ADD = 6'b100000;
+	localparam ADDU =6'b100001;
+	localparam SUB = 6'b100010;
+	localparam SUBU = 6'b100011;
 	//Logicas
-	localparam AND = 4'b0100;
-	localparam NOR = 4'b0111;
-	localparam OR	= 4'b0101;
-	localparam XOR = 4'b0110;
-	localparam SLT = 4'b1010;
-	localparam SLTU = ;
+	localparam AND = 6'b100100;
+	localparam NOR = 6'b100111;
+	localparam OR	= 6'b100101;
+	localparam XOR = 6'b100110;
+	localparam SLT = 6'b101010;
+	localparam SLTU = 6'b101011;
 	//Shifting Fixed
-	localparam SLL = 4'b1000;
-	localparam SRA = 4'b0011;
-	localparam SRL = 4'b0010;
+	localparam SLL = 6'b000000;
+	localparam SRA = 6'b000011;
+	localparam SRL = 6'b000010;
 	//Shifting Variable
-	localparam SLLV = 4'b;
-	localparam SRAV = 4'b;
-	localparam SRLV = 4'b;
+	localparam SLLV = 6'b000100;
+	localparam SRAV = 6'b000111;
+	localparam SRLV = 6'b000110;
 	
    always@*
    begin 
 		case(AluCon)
 			//Aritmeticas
 			ADD:	AluRes <= A+B;
+			ADDU:	AluRes <= A+B;
 			SUB:	AluRes <= A-B;
+			SUBU:	AluRes <= A-B; //Falta
 			//Logicas
 			AND:	AluRes <= A&B;
 			NOR:	AluRes <= ~(A|B);
 			OR:	AluRes <= A|B;
-			SLT:	AluRes = A<B ? 1:0;
+			SLT:	AluRes <= A<B ? 1:0;
 			XOR:	AluRes <= A^B;
+			SLTU:	AluRes <=A<B ? 1:0; //Falta
 			//Shiftings Fixed
 			SLL:	AluRes <= A<<B;
 			SRA:	AluRes <= A>>>B;
