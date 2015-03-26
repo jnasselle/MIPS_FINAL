@@ -3,5 +3,6 @@
 #No Ignorar archivos .v y .ucf
 !*.v
 !*.ucf
-!/ipcore_dir/
 !.gitignore
+!/ipcore_dir/
+!/ipcore_dir/*.xco
