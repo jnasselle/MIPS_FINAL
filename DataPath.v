@@ -28,10 +28,9 @@ module DataPath(
 	ETAPA DE FETCH
 */
 reg [31:0] IF_PC;	//Program Counter.Ver si no hacer un modulo
-
 Sumador IF_Sumador (
-    .op1(op1), 
-    .op2(op2), 
+    .op1(op1), //valor del PC
+    .op2(32'd4), //sumamos 4
     .result(result)
     );
 MemDatos IF_MemDatos (
@@ -72,7 +71,7 @@ wire [15:0] ID_InstruccionImm
 			ID_InstruccionFunct}; // El valor imm se construye.
 
 
-wire ID_RegWrite;	//S debe escribir un registro?
+wire ID_RegWrite;	//Se debe escribir un registro?
 wire ID_MemToReg;	//Existe writeback?
 wire ID_MemWrite;	//Se graba la memoria de dato? 
 wire [6:0] ID_AluControl;	//Control de la ALU
@@ -125,12 +124,12 @@ ALU EX_ALU (
 
 wire MEM_RegWrite;	//Se debe escribir un registro?
 wire MEM_MemToReg;	//Existe writeback?
-wire MEM_MemWrite;	//Se graba la memoria de dato? 
+wire MEM_MemWrite;	//Se graba la memoria de datos? 
 
 MemInstrucciones MEM_MemInstrucciones (
-  .clka(clka), // input clka
-  .addra(addra), // input [31 : 0] addra
-  .douta(douta) // output [31 : 0] douta
+  .clka(clka), 	// input clka
+  .addra(addra), 	// input [31 : 0] addra
+  .douta(douta) 	// output [31 : 0] douta
 );
 
 /*
