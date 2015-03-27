@@ -19,11 +19,20 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module MEM_WB(
-	input clk
+	input clk,
+	input [31:0] MemDataIn,
+	input	[31:0] ALUDataIn,
+	input [4:0] WriteBackRegIn,
+	output reg [31:0] MemDataOut,
+	output reg [31:0] ALUDataOut,
+	output reg [4:0] WriteBackRegOut
     );
 
-always(posedge clk)
+always@(clk)
 begin
+	MemDataOut<=MemDataIn;
+	ALUDataOut<=ALUDataIn;
+	WriteBackRegOut<=WriteBackRegIn;
 end
 
 

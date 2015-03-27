@@ -19,11 +19,29 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module ID_EX(
-	input clk
+	input clk,
+	input [31:0] RegData1In,
+	input [31:0] RegData2In,
+	input [31:0] ExtendidoIn,
+	input [4:0] rsIn,
+	input [4:0] rtIn,
+	input [4:0] rdIn,
+	output reg [31:0] RegData1Out,
+	output reg [31:0] RegData2Out,
+	output reg [31:0] ExtendidoOut,
+	output reg [4:0] rsOut,
+	output reg [4:0] rtOut,
+	output reg [4:0] rdOut	
     );
 
-always(posedge clk)
+always@(clk)
 begin
+	RegData1Out<=RegData1In;
+	RegData2Out<=RegData2In;
+	ExtendidoOut<=ExtendidoIn;
+	rsOut<=rsIn;
+	rtOut<=rtIn;
+	rdOut<=rdIn;
 end
 
 

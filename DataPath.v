@@ -33,13 +33,13 @@ Sumador IF_Sumador (
     .op2(32'd4), //sumamos 4
     .result(result)
     );
-MemDatos IF_MemDatos (
-  .clka(clka), // input clka
-  .wea(wea), // input [3 : 0] wea
-  .addra(addra), // input [31 : 0] addra
-  .dina(dina), // input [31 : 0] dina
-  .douta(douta) // output [31 : 0] douta
+	 
+MemInstrucciones MEM_MemInstrucciones (
+  .clka(clka), 	// input clka
+  .addra(addra), 	// input [31 : 0] addra
+  .douta(douta) 	// output [31 : 0] douta
 );
+
 /*
 	LATCH IF/ID
 */
@@ -126,11 +126,14 @@ wire MEM_RegWrite;	//Se debe escribir un registro?
 wire MEM_MemToReg;	//Existe writeback?
 wire MEM_MemWrite;	//Se graba la memoria de datos? 
 
-MemInstrucciones MEM_MemInstrucciones (
-  .clka(clka), 	// input clka
-  .addra(addra), 	// input [31 : 0] addra
-  .douta(douta) 	// output [31 : 0] douta
+MemDatos IF_MemDatos (
+  .clka(clka), // input clka
+  .wea(wea), // input [3 : 0] wea
+  .addra(addra), // input [31 : 0] addra
+  .dina(dina), // input [31 : 0] dina
+  .douta(douta) // output [31 : 0] douta
 );
+
 
 /*
 	ETAPA DE WRITEBACK

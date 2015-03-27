@@ -19,12 +19,20 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module EX_MEM(
-	input clk
+	input clk,
+	input [31:0] ALUResultIn,
+	input [5:0] WriteBackRegIn,	//Para cuando se quiere el resultado en un registro o un load
+	input [31:0] RegToMemDataIn, //Para cuando se quiere hacer un store
+	output reg [31:0] ALUResultOut,
+	output reg [5:0] WriteBackRegOut,	//Para cuando se quiere el resultado en un registro o un load
+	output reg [31:0] RegToMemDataOut
     );
 
-always(posedge clk)
+always@(clk)
 begin
+	ALUResultOut<=ALUResultIn;
+	WriteBackRegOut<=WriteBackRegIn;
+	RegToMemDataOut<=RegToMemDataIn;
 end
-
 
 endmodule
