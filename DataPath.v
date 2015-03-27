@@ -104,26 +104,53 @@ Extension ID_Extension (
 */
 
 wire IE_RegWrite;	//Se debe escribir un registro?
-wire IE_MemToReg;	//Existe writeback?
+wire IE_MemtoReg;	//Existe writeback?
 wire IE_MemWrite;	//Se graba la memoria de dato? 
 wire [6:0] IE_AluControl;	//Control de la ALU
 wire IE_AluSrc;	//El operando de la ALU es un reg o un imm?
 wire IE_RegDest;	//El registro destino es rd o rt?
+wire IE_AluOut;	//Salida de la alu
+
+wire IE_WriteBackReg;
+wire 
 
 
 ALU EX_ALU (
-    .AluCon(AluCon), 
-    .A(A), 
-    .B(B), 
-    .AluOut(AluOut), 
-    .Zero(Zero)
+    .AluCon(IE_AluControl), 
+    .A(A), 	//rs
+    .B(B), 	//rt o shamt o imm
+    .AluOut(IE_AluOut), 
     );
+	 
+	 
+/*
+	LATCH EX_MEM
+*/
+
+EX_MEM DataPath_EX_MEM (
+	  //Inputs
+    .clk(clk),
+    .RegWriteIn(IE_RegWrite), //Control
+    .MemtoRegIn(IE_MemToReg), //Control
+    .MemWriteIn(IE_MemWrite), //Control
+    .ALUResultIn(IE_AluOut),	//Datos
+    .WriteBackRegIn(WriteBackRegIn), //Numero de Registro  FALTA!
+    .RegToMemDataIn(RegToMemDataIn), //Datos FALTA!
+	 //Outputs
+    .RegWriteOut(MEM_RegWrite), //Control 
+    .MemtoRegOut(MEM_MemtoReg), //Control 
+    .MemWriteOut(MEM_MemWrite), //Control 
+    .ALUResultOut(ALUResultOut), //Datos FALTA!
+    .WriteBackRegOut(WriteBackRegOut),	//Numero de Registro FALTA!
+    .RegToMemDataOut(RegToMemDataOut) //Datos FALTA!
+    );
+
 /*
 	ETAPA DE MEMORY
 */
 
 wire MEM_RegWrite;	//Se debe escribir un registro?
-wire MEM_MemToReg;	//Existe writeback?
+wire MEM_MemtoReg;	//Existe writeback?
 wire MEM_MemWrite;	//Se graba la memoria de datos? 
 
 MemDatos IF_MemDatos (
@@ -153,9 +180,6 @@ ID_EX DataPath_ID_EX(
 	.clk(clk)
 );
 
-EX_MEM DataPath_EX_MEM(
-	.clk(clk)
-);
 
 MEM_WB DataPath_MEM_WB(
 	.clk(clk)
