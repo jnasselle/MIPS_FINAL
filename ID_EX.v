@@ -26,12 +26,26 @@ module ID_EX(
 	input [4:0] rsIn,
 	input [4:0] rtIn,
 	input [4:0] rdIn,
+	input	[5:0]	AluControlIn,
+	input	AluSrcIn,
+	input	RegWriteIn,
+	input	MemtoRegIn,
+	input	MemWriteIn,
+	input	RegDstIn,
+	input	BranchIn,
 	output reg [31:0] RegData1Out,
 	output reg [31:0] RegData2Out,
 	output reg [31:0] ExtendidoOut,
 	output reg [4:0] rsOut,
 	output reg [4:0] rtOut,
-	output reg [4:0] rdOut	
+	output reg [4:0] rdOut,	
+	output reg	[5:0] AluControlOut,
+	output reg	AluSrcOut,
+	output reg	RegWriteOut,
+	output reg	MemtoRegOut,
+	output reg	MemWriteOut,
+	output reg	RegDstOut,
+	output reg	BranchOut
     );
 
 always@(clk)
@@ -42,6 +56,13 @@ begin
 	rsOut<=rsIn;
 	rtOut<=rtIn;
 	rdOut<=rdIn;
+	AluControlOut<=AluControlIn;
+	AluSrcOut<=AluSrcIn;
+	RegWriteOut<=RegWriteIn;
+	MemtoRegOut<=MemtoRegIn;
+	MemWriteOut<=MemWriteIn;
+	RegDstOut<=RegDstIn;
+	BranchOut<=BranchIn;
 end
 
 
