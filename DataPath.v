@@ -45,13 +45,12 @@ MemInstrucciones MEM_MemInstrucciones (
 */
 
 IF_ID DataPath_IF_ID(
-	.clk(clk)
+	.clk(clk),
 	.instruccionIn(),	//Input
 	.instruccionOut({ID_InstruccionOp,
 		ID_InstruccionRs,
 		ID_InstruccionRt,
-		ID_InstruccionRd,
-		
+		ID_InstruccionRd		
 		})		//Output
 );
 
@@ -166,14 +165,14 @@ wire IE_RegDest;	//El registro destino es rd o rt?
 wire IE_AluOut;	//Salida de la alu
 
 wire IE_WriteBackReg;
-wire 
+
 
 
 ALU EX_ALU (
     .AluCon(IE_AluControl), 
     .A(A), 	//rs
     .B(B), 	//rt o shamt o imm
-    .AluOut(IE_AluOut), 
+    .AluOut(IE_AluOut) 
     );
 	 
 	 
