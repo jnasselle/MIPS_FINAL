@@ -77,6 +77,13 @@ wire ID_MemWrite;	//Se graba la memoria de dato?
 wire [6:0] ID_AluControl;	//Control de la ALU
 wire ID_AluSrc;	//El operando de la ALU es un reg o un imm?
 wire ID_RegDest;	//El registro destino es rd o rt?
+wire	[5:0]	ID_AluControl;
+wire	ID_AluSrc;
+wire	ID_RegWrite;
+wire	ID_MemtoReg;
+wire	ID_MemWrite;
+wire	ID_RegDst;
+wire	ID_Branch;
 
 
 Registros ID_Registros (
@@ -99,6 +106,53 @@ Extension ID_Extension (
     .data_out(data_out), 
     .tipo(tipo)
     );
+	 
+/////////////////////////////////ControlUnit///////////////////////////////////////	 
+ControlUnit DataPath_ControlUnit (
+    .Op(ID_InstruccionOp), 
+    .Funct(ID_InstruccionFunct), 
+    .MemtoReg(ID_MemtoReg), 
+    .MemWrite(ID_MemWrite), 
+    .AluSrc(ID_AluSrc), 
+    .RegDst(ID_RegDst), 
+    .RegWrite(ID_RegWrite), 
+    .Branch(ID_Branch), 
+    .AluControl(ID_AluControl)
+    );	 
+	 
+//////////////////////////////////ID_EX////////////////////////////////////////////	 
+ID_EX DataPath_ID_EX (
+    .clk(clk), 
+    .RegData1In(RegData1In), 
+    .RegData2In(RegData2In), 
+    .ExtendidoIn(ExtendidoIn), 
+    .rsIn(rsIn), 
+    .rtIn(rtIn), 
+    .rdIn(rdIn), 
+    .AluControlIn(ID_AluControl), 
+    .AluSrcIn(ID_AluSrc), 
+    .RegWriteIn(ID_RegWrite), 
+    .MemtoRegIn(ID_MemtoReg), 
+    .MemWriteIn(ID_MemWrite), 
+    .RegDstIn(ID_RegDst), 
+    .BranchIn(ID_Branch), 
+////////////////////////////////////////////////////////////////////////////////////
+    .RegData1Out(RegData1Out), 
+    .RegData2Out(RegData2Out), 
+    .ExtendidoOut(ExtendidoOut), 
+    .rsOut(rsOut), 
+    .rtOut(rtOut), 
+    .rdOut(rdOut), 
+    .AluControlOut(AluControlOut), 
+    .AluSrcOut(AluSrcOut), 
+    .RegWriteOut(RegWriteOut), 
+    .MemtoRegOut(MemtoRegOut), 
+    .MemWriteOut(MemWriteOut), 
+    .RegDstOut(RegDstOut), 
+    .BranchOut(BranchOut)
+    );	 
+	 
+	 
 /*
 	ETAPA DE EXECUTION
 */
@@ -145,14 +199,6 @@ wire WB_MemToReg;	//Existe writeback?
 
 
 	 
-	
-
-
-
-ID_EX DataPath_ID_EX(
-	.clk(clk)
-);
-
 EX_MEM DataPath_EX_MEM(
 	.clk(clk)
 );
