@@ -22,7 +22,7 @@ module ALU(
 	input [3:0] AluCon,
 	input [31:0] A, //rs
 	input [31:0] B, //rt o shamt
-	output [31:0] AluOut,
+	output [31:0] AluOut
 	);
 	
 	/*

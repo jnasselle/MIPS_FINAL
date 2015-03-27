@@ -32,11 +32,11 @@ module ControlUnit(
 	output [5:0] AluControl //salida en caso de ser necesario.
    );
 	
-	reg [6:0] controls;
-	assign {RegWrite, RegDst, AluSrc, Branch, MemWrite, MemtoReg, Branch} controls;
+//	reg [6:0] controls;
+//	assign {RegWrite, RegDst, AluSrc, Branch, MemWrite, MemtoReg, Branch} controls;
 	
 	// Establecer las lineas de control segun la opcion.
-	always @ (*)
+//	always @ (*)
 //	case(opcion)
 //		6'b000000: controls <= 9'b1100000; //R
 //		6'b100011: controls <= 9'b1010010; //LW

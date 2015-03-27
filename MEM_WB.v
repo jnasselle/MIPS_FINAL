@@ -28,7 +28,7 @@ module MEM_WB(
 	output reg [31:0] MemDataOut,
 	output reg [31:0] ALUDataOut,
 	output reg [4:0] WriteBackRegOut,
-	output reg	RegWritwOut,
+	output reg	RegWriteOut,
 	output reg MemtoRegOut
     );
 
@@ -37,7 +37,7 @@ begin
 	MemDataOut<=MemDataIn;
 	ALUDataOut<=ALUDataIn;
 	WriteBackRegOut<=WriteBackRegIn;
-	RegwriteOut<=RegWriteIn;
+	RegWriteOut<=RegWriteIn;
 	MemtoRegOut<=MemtoRegIn;
 end
 
