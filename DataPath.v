@@ -215,6 +215,26 @@ MemDatos IF_MemDatos (
   .douta(douta) // output [31 : 0] douta
 );
 
+/*
+	LATCH MEM_WB
+*/
+
+MEM_WB DataPath_MEM_WB (
+    .clk(clk), 
+    .MemDataIn(MemDataIn), 
+    .ALUDataIn(ALUDataIn), 
+    .WriteBackRegIn(WriteBackRegIn), 
+    .RegWritwIn(MEM_RegWrite), 
+    .MemtoRegIn(MEM_MemtoReg), 
+    .MemDataOut(MemDataOut), 
+    .ALUDataOut(ALUDataOut), 
+    .WriteBackRegOut(WriteBackRegOut), 
+    .RegWritwOut(RegWritwOut), 
+    .MemtoRegOut(MemtoRegOut)
+    );
+
+
+
 
 /*
 	ETAPA DE WRITEBACK
@@ -222,35 +242,6 @@ MemDatos IF_MemDatos (
 
 wire WB_RegWrite;	//Se debe escribir un registro?
 wire WB_MemToReg;	//Existe writeback?
-
-
-
-	 
-<<<<<<< HEAD
-	
-
-
-
-ID_EX DataPath_ID_EX(
-	.clk(clk)
-);
-
-=======
-EX_MEM DataPath_EX_MEM(
-	.clk(clk)
-);
->>>>>>> 1cb17d1db7768bc67df797667c48b348c261359d
-
-MEM_WB DataPath_MEM_WB(
-	.clk(clk)
-);
-	 
-
-	 
-
-	 
-	 
-	 
 
 
 
