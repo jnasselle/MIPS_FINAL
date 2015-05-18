@@ -23,7 +23,7 @@ module MEM_WB(
 	input [31:0] MemDataIn,
 	input	[31:0] ALUDataIn,
 	input [4:0] WriteBackRegIn,
-	input	RegWritwIn,
+	input	RegWriteIn,
 	input MemtoRegIn,
 	output reg [31:0] MemDataOut,
 	output reg [31:0] ALUDataOut,
