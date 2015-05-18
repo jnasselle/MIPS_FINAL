@@ -19,23 +19,23 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module ALU(
-	input [3:0] AluCon,
+	input [3:0] ALUCon,
 	input [31:0] A, //rs
 	input [31:0] B, //rt o shamt
-	output [31:0] AluOut
+	output [31:0] ALUOut
 	);
 	
 	/*
 	http://billauer.co.il/blog/2012/10/signed-arithmetics-verilog/
-	Se deben implementar 16 operaciones,por lo que el AluCon debe ser de 4bits.
+	Se deben implementar 16 operaciones,por lo que el ALUCon debe ser de 4bits.
 	Desventaja: El controlador va a tener que tener logica para routear la operacion
-					mientras que si mandamos los 6 bits de AluOp es directo.
+					mientras que si mandamos los 6 bits de ALUOp es directo.
 	Sacar flag de overflow,no se si la vamos a usar despues pero tiene que estar
 	Operaciones de shift: Fixed vs Variable
 		->FIXED: La cantidad a desplazar viene en la instruccion (campo shamt)
 		->VARIABLE: La cantidad a desplazar son los ultimos 5 bits del contenido de un registro
 	*/
-	reg [31:0] AluRes;
+	reg [31:0] ALURes;
 	
 	//Aritmeticas
 	localparam ADD = 6'b100000;
@@ -60,32 +60,32 @@ module ALU(
 	
    always@*
    begin 
-		case(AluCon)
+		case(ALUCon)
 			//Aritmeticas
-			ADD:	AluRes <= A+B;
-			ADDU:	AluRes <= A+B;
-			SUB:	AluRes <= A-B;
-			SUBU:	AluRes <= A-B; //Falta
+			ADD:	ALURes <= A+B;
+			ADDU:	ALURes <= A+B;
+			SUB:	ALURes <= A-B;
+			SUBU:	ALURes <= A-B; //Falta
 			//Logicas
-			AND:	AluRes <= A&B;
-			NOR:	AluRes <= ~(A|B);
-			OR:	AluRes <= A|B;
-			SLT:	AluRes <= A<B ? 1:0;
-			XOR:	AluRes <= A^B;
-			SLTU:	AluRes <=A<B ? 1:0; //Falta
+			AND:	ALURes <= A&B;
+			NOR:	ALURes <= ~(A|B);
+			OR:	ALURes <= A|B;
+			SLT:	ALURes <= A<B ? 1:0;
+			XOR:	ALURes <= A^B;
+			SLTU:	ALURes <=A<B ? 1:0; //Falta
 			//Shiftings Fixed
-			SLL:	AluRes <= A<<B;
-			SRA:	AluRes <= A>>>B;
-			SRL:	AluRes <= A>>B;
+			SLL:	ALURes <= A<<B;
+			SRA:	ALURes <= A>>>B;
+			SRL:	ALURes <= A>>B;
 			//Shiftings Variable
-			SLLV:	AluRes <= A<<B[4:0];
-			SRAV:	AluRes <= A>>>B[4:0];
-			SRLV:	AluRes <= A>>B[4:0];
+			SLLV:	ALURes <= A<<B[4:0];
+			SRAV:	ALURes <= A>>>B[4:0];
+			SRLV:	ALURes <= A>>B[4:0];
 		endcase
 	end
 	
-	assign Zero = (AluOut == 0) ? 1'b1 : 1'b0;
-	assign AluOut = AluRes;
+	assign Zero = (ALUOut == 0) ? 1'b1 : 1'b0;
+	assign ALUOut = ALURes;
 
 
 endmodule

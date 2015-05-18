@@ -25,15 +25,15 @@ module ControlUnit(
 	output MemtoReg,
 	output MemWrite,
 //	output pcscr,			para la AND
-	output AluSrc,
+	output ALUSrc,
 	output RegDst,
 	output RegWrite,
 	output Branch,
-	output [5:0] AluControl //salida en caso de ser necesario.
+	output [5:0] ALUControl //salida en caso de ser necesario.
    );
 	
 //	reg [6:0] controls;
-//	assign {RegWrite, RegDst, AluSrc, Branch, MemWrite, MemtoReg, Branch} controls;
+//	assign {RegWrite, RegDst, ALUSrc, Branch, MemWrite, MemtoReg, Branch} controls;
 	
 	// Establecer las lineas de control segun la opcion.
 //	always @ (*)

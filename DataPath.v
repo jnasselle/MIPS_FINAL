@@ -27,17 +27,33 @@ module DataPath(
 /*
 	ETAPA DE FETCH
 */
+wire [31:0] IF_PC_Out;
+wire [31:0] IF_PC_Out4;
+wire [31:0] IF_PC_In;
+wire [31:0] IF_RD;
 reg [31:0] IF_PC;	//Program Counter.Ver si no hacer un modulo
+always@(clk)
+begin	//falta if para ver si es por nivel positivo o negativo
+	IF_PC_Out<=IF_PC;
+end
 Sumador IF_Sumador (
-    .op1(op1), //valor del PC
+    .op1(IF_PC_Out), //valor del PC
     .op2(32'd4), //sumamos 4
-    .result(result)
+    .result(IF_PC_Out4)
     );
 	 
+Mux2 IF_Mux2 (
+    .in0(ID_PCBranch), 	//TODO: sumador de ID para jumps
+    .in1(IF_PC_Out4), //Salida del sumador
+    .out(IF_PC_In), //Va al PC
+    .sel(sel)	//TODO!
+    );
+
+	 
 MemInstrucciones MEM_MemInstrucciones (
-  .clka(clka), 	// input clka
-  .addra(addra), 	// input [31 : 0] addra
-  .douta(douta) 	// output [31 : 0] douta
+  .clka(clk), 	// input clka
+  .addra(IF_PC_Out), 	// input [31 : 0] addra
+  .douta(IF_RD) 	// output [31 : 0] douta
 );
 
 /*
@@ -46,109 +62,124 @@ MemInstrucciones MEM_MemInstrucciones (
 
 IF_ID DataPath_IF_ID(
 	.clk(clk),
-	.instruccionIn(),	//Input
-	.instruccionOut({ID_InstruccionOp,
-		ID_InstruccionRs,
-		ID_InstruccionRt,
-		ID_InstruccionRd		
-		})		//Output
+	.instruccionIn(IF_RD),	//Input
+	.PC4In(IF_PC_Out4),
+	.PC4Out(ID_PC4),
+	.instruccionOut(ID_Instruccion)		//Output
 );
 
 /*
 	ETAPA DE DECODE
 */
-
-wire [5:0] ID_InstruccionOp;
-wire [4:0] ID_InstruccionRs;
-wire [4:0] ID_InstruccionRt;
-wire [4:0] ID_InstruccionRd;
-wire [4:0] ID_InstruccionShamt;
-wire [5:0] ID_InstruccionFunct;
-wire [15:0] ID_InstruccionImm
-		= {ID_InstruccionRd,
-			ID_InstruccionShamt,
-			ID_InstruccionFunct}; // El valor imm se construye.
-
-
+wire [31:0] ID_PC4;
+wire [31:0] ID_Instruccion;
 wire ID_RegWrite;	//Se debe escribir un registro?
 wire ID_MemToReg;	//Existe writeback?
 wire ID_MemWrite;	//Se graba la memoria de dato? 
-wire [6:0] ID_AluControl;	//Control de la ALU
-wire ID_AluSrc;	//El operando de la ALU es un reg o un imm?
+wire [6:0] ID_ALUControl;	//Control de la ALU
+wire ID_ALUSrc;	//El operando de la ALU es un reg o un imm?
 wire ID_RegDest;	//El registro destino es rd o rt?
-wire	[5:0]	ID_AluControl;
-wire	ID_AluSrc;
+wire	[5:0]	ID_ALUControl;
+wire	ID_ALUSrc;
 wire	ID_RegWrite;
 wire	ID_MemtoReg;
 wire	ID_MemWrite;
 wire	ID_RegDst;
 wire	ID_Branch;
-
+wire [31:0] ID_RD1;
+wire [31:0] ID_RD2;
+wire [31:0] ID_ImmExtendido;
+wire [31:0] ID_ImmExtendidoS2;	//ID_ImmExtendido<<2
+wire [31:0] ID_PCBranch;	
 
 Registros ID_Registros (
     .clk(clk), 
     .reset(reset), 
-    .rs_addr(rs_addr), 
-    .rt_addr(rt_addr), 
-    .rd_addr(rd_addr), 
-    .rd_data(rd_data), 
-    .write_en(write_en), 
-    .rs_data(rs_data), 
-    .rt_data(rt_data)
+    .A1In(ID_Instruccion[25:21]), 
+    .A2In(ID_Instruccion[20:16]), 
+    .A3In(ID_Instruccion[15:11]), 
+    .WD3In(),	//TODO!! 
+    .WE3(), //TODO!!
+    .RD1Out(ID_RD1), 
+    .RD2Out(ID_RD2)
     );
-ShiftIzq ID_ShiftIzq (
-    .data_in(data_in), 
-    .data_out(data_out)
-    );
-Extension ID_Extension (
-    .data_in(data_in), 
-    .data_out(data_out), 
-    .tipo(tipo)
+
+Mux2 ID_Mux2_RD1 (
+    .in0(ID_RD1), 
+    .in1(),	//TODO!!
+    .out(),	//TODO!!
+    .sel()	//TODO!!
     );
 	 
+Mux2 ID_Mux2_RD2 (
+    .in0(ID_RD2), 
+    .in1(),	//TODO!!
+    .out(), //TODO!!
+    .sel()	//TODO!!
+    );
+
+//TODO!! FALTA COMPARADOR PARA BEQ
+
+Extension ID_Extension (
+    .data_in(ID_Instruccion[15:0]), 
+    .data_out(ID_ImmExtendido), 
+    .tipo()	//TODO!!!
+    );
+
+ShiftIzq ID_ShiftIzq (
+    .data_in(ID_ImmExtendido), 
+    .data_out(ID_ImmExtendidoS2)
+    );
+	 
+Sumador ID_Sumador (
+    .op1(ID_ImmExtendidoS2), 
+    .op2(ID_PC4), 
+    .result(ID_PCBranch)
+    );
+
 /////////////////////////////////ControlUnit///////////////////////////////////////	 
 ControlUnit DataPath_ControlUnit (
-    .Op(ID_InstruccionOp), 
-    .Funct(ID_InstruccionFunct), 
+    .Op(ID_Instruccion[31:26]), 
+    .Funct(ID_Instruccion[5:0]), 
     .MemtoReg(ID_MemtoReg), 
     .MemWrite(ID_MemWrite), 
-    .AluSrc(ID_AluSrc), 
+    .ALUSrc(ID_ALUSrc), 
     .RegDst(ID_RegDst), 
     .RegWrite(ID_RegWrite), 
     .Branch(ID_Branch), 
-    .AluControl(ID_AluControl)
+    .ALUControl(ID_ALUControl)
     );	 
 	 
 //////////////////////////////////ID_EX////////////////////////////////////////////	 
 ID_EX DataPath_ID_EX (
     .clk(clk), 
-    .RegData1In(RegData1In), 
-    .RegData2In(RegData2In), 
-    .ExtendidoIn(ExtendidoIn), 
-    .rsIn(rsIn), 
-    .rtIn(rtIn), 
-    .rdIn(rdIn), 
-    .AluControlIn(ID_AluControl), 
-    .AluSrcIn(ID_AluSrc), 
+    .RegData1In(ID_RD1), 
+    .RegData2In(ID_RD2), 
+    .ExtendidoIn(ID_ImmExtendido), 
+    .rsIn(ID_Instruccion[25:21]), 
+    .rtIn(ID_Instruccion[20:16]), 
+    .rdIn(ID_Instruccion[15:11]), 
+    .ALUControlIn(ID_ALUControl), 
+    .ALUSrcIn(ID_ALUSrc), 
     .RegWriteIn(ID_RegWrite), 
     .MemtoRegIn(ID_MemtoReg), 
     .MemWriteIn(ID_MemWrite), 
     .RegDstIn(ID_RegDst), 
     .BranchIn(ID_Branch), 
 ////////////////////////////////////////////////////////////////////////////////////
-    .RegData1Out(RegData1Out), 
-    .RegData2Out(RegData2Out), 
-    .ExtendidoOut(ExtendidoOut), 
-    .rsOut(rsOut), 
-    .rtOut(rtOut), 
-    .rdOut(rdOut), 
-    .AluControlOut(AluControlOut), 
-    .AluSrcOut(AluSrcOut), 
-    .RegWriteOut(RegWriteOut), 
-    .MemtoRegOut(MemtoRegOut), 
-    .MemWriteOut(MemWriteOut), 
-    .RegDstOut(RegDstOut), 
-    .BranchOut(BranchOut)
+    .RegData1Out(EX_RD1), 
+    .RegData2Out(EX_RD1), 
+    .ExtendidoOut(EX_ImmExtendido), 
+    .rsOut(EX_Rs), 
+    .rtOut(EX_Rt), 
+    .rdOut(EX_Rd), 
+    .ALUControlOut(EX_ALUControl), 
+    .ALUSrcOut(EX_ALUSrc), 
+    .RegWriteOut(EX_RegWrite), 
+    .MemtoRegOut(EX_MemtoReg), 
+    .MemWriteOut(EX_MemWrite), 
+    .RegDstOut(EX_RegDest), 
+    .BranchOut(BranchOut) //????
     );	 
 	 
 	 
@@ -156,23 +187,64 @@ ID_EX DataPath_ID_EX (
 	ETAPA DE EXECUTION
 */
 
-wire IE_RegWrite;	//Se debe escribir un registro?
-wire IE_MemtoReg;	//Existe writeback?
-wire IE_MemWrite;	//Se graba la memoria de dato? 
-wire [6:0] IE_AluControl;	//Control de la ALU
-wire IE_AluSrc;	//El operando de la ALU es un reg o un imm?
-wire IE_RegDest;	//El registro destino es rd o rt?
-wire IE_AluOut;	//Salida de la alu
+wire EX_RegWrite;	//Se debe escribir un registro?
+wire EX_MemtoReg;	//Existe writeback?
+wire EX_MemWrite;	//Se graba la memoria de dato? 
+wire [6:0] EX_ALUControl;	//Control de la ALU
+wire EX_ALUSrc;	//El operando de la ALU es un reg o un imm?
+wire EX_RegDest;	//El registro destino es rd o rt?
+wire [31:0] EX_ALUOut;	//Salida de la ALU
+wire [4:0] EX_Rs;		// Salida Latch ID/IE
+wire [4:0] EX_Rt;		// Salida Latch ID/IE
+wire [4:0] EX_Rd; 	// Salida Latch ID/IE
+wire [31:0] EX_RD1;	// Salida Latch ID/IE
+wire [31:0] EX_RD2;	// Salida Latch ID/IE
+wire [4:0] EX_WriteReg;	//Salida EX_Mux2_RegDst
+wire [31:0] EX_SrcA;
+wire [31:0] EX_SrcB;
+wire EX_ForwardA;
+wire EX_ForwardB;
+wire [31:0] EX_WriteData;
+wire [31:0] EX_ImmExtendido; 
 
-wire IE_WriteBackReg;
 
+Mux2 EX_Mux2_RegDst (
+    .in0(EX_Rt), 
+    .in1(EX_Rd), 
+    .out(EX_WriteReg), 
+    .sel(EX_RegDest)
+    );
+	 
+Mux4 EX_Mux4_ForwardA (
+    .in0(EX_RD1), 
+    .in1(MEM_ALUOut), 
+    .in2(WB_Result), 
+    .in3(in3), //TODO!!
+    .out(EX_SrcA), 
+    .sel(EX_ForwardA)
+    );
 
+Mux4 EX_Mux4_ForwardB (
+    .in0(EX_RD2), 
+    .in1(MEM_ALUOut), 
+    .in2(WB_Result), 
+    .in3(in3), //TODO!!
+    .out(EX_WriteData), 
+    .sel(EX_ForwardB)
+    );
+
+Mux2 EX_Mux2_ALUSrc (
+    .in0(EX_WriteData), 
+    .in1(EX_ImmExtendido), 
+    .out(EX_SrcB), 
+    .sel(EX_ALUSrc)
+    );
 
 ALU EX_ALU (
-    .AluCon(IE_AluControl), 
-    .A(A), 	//rs
-    .B(B), 	//rt o shamt o imm
-    .AluOut(IE_AluOut) 
+    .ALUCon(EX_ALUControl), 
+    .A(EX_SrcA), 	//rs
+    .B(EX_SrcB), 	//rt o shamt o imm
+    .ALUOut(EX_ALUOut) 
     );
 	 
 	 
@@ -183,19 +255,19 @@ ALU EX_ALU (
 EX_MEM DataPath_EX_MEM (
 	  //Inputs
     .clk(clk),
-    .RegWriteIn(IE_RegWrite), //Control
-    .MemtoRegIn(IE_MemToReg), //Control
-    .MemWriteIn(IE_MemWrite), //Control
-    .ALUResultIn(IE_AluOut),	//Datos
-    .WriteBackRegIn(WriteBackRegIn), //Numero de Registro  FALTA!
-    .RegToMemDataIn(RegToMemDataIn), //Datos FALTA!
+    .RegWriteIn(EX_RegWrite), //Control
+    .MemtoRegIn(EX_MemToReg), //Control
+    .MemWriteIn(EX_MemWrite), //Control
+    .ALUResultIn(EX_ALUOut),	//Datos
+    .WriteRegIn(EX_WriteReg), //Numero de Registro para writeback
+    .WriteDataIn(EX_WriteData), //Datos para writeback
 	 //Outputs
     .RegWriteOut(MEM_RegWrite), //Control 
     .MemtoRegOut(MEM_MemtoReg), //Control 
     .MemWriteOut(MEM_MemWrite), //Control 
-    .ALUResultOut(ALUResultOut), //Datos FALTA!
-    .WriteBackRegOut(WriteBackRegOut),	//Numero de Registro FALTA!
-    .RegToMemDataOut(RegToMemDataOut) //Datos FALTA!
+    .ALUResultOut(MEM_ALUOut), //Datos
+    .WriteDataOut(MEM_WriteData),	//DATOS
+    .WriteRegOut(MEM_WriteReg) //Direccion de Registro
     );
 
 /*
@@ -204,14 +276,18 @@ EX_MEM DataPath_EX_MEM (
 
 wire MEM_RegWrite;	//Se debe escribir un registro?
 wire MEM_MemtoReg;	//Existe writeback?
-wire MEM_MemWrite;	//Se graba la memoria de datos? 
+wire MEM_MemWrite;	//Se graba la memoria de datos?
+wire [31:0] MEM_ALUOut;
+wire [31:0] MEM_WriteData;
+wire [4:0] MEM_WriteReg;
+wire [31:0] MEM_RD;
 
 MemDatos IF_MemDatos (
-  .clka(clka), // input clka
-  .wea(wea), // input [3 : 0] wea
-  .addra(addra), // input [31 : 0] addra
-  .dina(dina), // input [31 : 0] dina
-  .douta(douta) // output [31 : 0] douta
+  .clka(clk), // input clka
+  .wea(MEM_MemWrite), // input [3 : 0] wea
+  .addra(MEM_ALUOut), // input [31 : 0] addra
+  .dina(MEM_WriteData), // input [31 : 0] dina
+  .douta(MEM_RD) // output [31 : 0] douta
 );
 
 /*
@@ -220,11 +296,12 @@ MemDatos IF_MemDatos (
 
 MEM_WB DataPath_MEM_WB (
     .clk(clk), 
-    .MemDataIn(MemDataIn), 
+    .MemDataIn(MEM_RD), 
     .ALUDataIn(ALUDataIn), 
-    .WriteBackRegIn(WriteBackRegIn), 
+    .WriteRegIn(MEM_WriteReg), 
     .RegWritwIn(MEM_RegWrite), 
-    .MemtoRegIn(MEM_MemtoReg), 
+    .MemtoRegIn(MEM_MemtoReg),
+	//Outputs	 
     .MemDataOut(MemDataOut), 
     .ALUDataOut(ALUDataOut), 
     .WriteBackRegOut(WriteBackRegOut), 
@@ -241,6 +318,17 @@ MEM_WB DataPath_MEM_WB (
 
 wire WB_RegWrite;	//Se debe escribir un registro?
 wire WB_MemToReg;	//Existe writeback?
+wire [31:0] WB_ReadData;
+wire [31:0] WB_ALUOut;
+wire [4:0] WB_WriteReg;
+wire [31:0] WB_Result;
+
+Mux2 WB_Mux2_MemToReg (
+    .in0(WB_ReadData), 
+    .in1(WB_ALUOut), 
+    .out(WB_Result), 
+    .sel(WB_MemToReg)
+    );
 
 
 

@@ -26,8 +26,8 @@ module ID_EX(
 	input [4:0] rsIn,
 	input [4:0] rtIn,
 	input [4:0] rdIn,
-	input	[5:0]	AluControlIn,
-	input	AluSrcIn,
+	input	[5:0]	ALUControlIn,
+	input	ALUSrcIn,
 	input	RegWriteIn,
 	input	MemtoRegIn,
 	input	MemWriteIn,
@@ -39,8 +39,8 @@ module ID_EX(
 	output reg [4:0] rsOut,
 	output reg [4:0] rtOut,
 	output reg [4:0] rdOut,	
-	output reg	[5:0] AluControlOut,
-	output reg	AluSrcOut,
+	output reg	[5:0] ALUControlOut,
+	output reg	ALUSrcOut,
 	output reg	RegWriteOut,
 	output reg	MemtoRegOut,
 	output reg	MemWriteOut,
@@ -56,8 +56,8 @@ begin
 	rsOut<=rsIn;
 	rtOut<=rtIn;
 	rdOut<=rdIn;
-	AluControlOut<=AluControlIn;
-	AluSrcOut<=AluSrcIn;
+	ALUControlOut<=ALUControlIn;
+	ALUSrcOut<=ALUSrcIn;
 	RegWriteOut<=RegWriteIn;
 	MemtoRegOut<=MemtoRegIn;
 	MemWriteOut<=MemWriteIn;

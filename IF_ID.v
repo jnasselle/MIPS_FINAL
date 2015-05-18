@@ -21,9 +21,9 @@
 module IF_ID(
 	input clk,
 	input [31:0] instruccionIn,
-	input [31:0] NextPCIn,	//PC+4
+	input [31:0] PC4In,	//PC+4
 	output reg [31:0] instruccionOut,
-	output reg [31:0] NextPCOut
+	output reg [31:0] PC4Out
     );
 
 always@ (clk)	//Latch,por nivel
