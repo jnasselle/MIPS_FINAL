@@ -31,17 +31,25 @@ module HazardUnit(
 	input RegWriteW,
 	input MemToReg,
 	input BranchD,
-	output StallF,
-	output StallD,
-	output ForwardAD,
-	output ForwardBD,
-	output FlushE,
+	output reg StallF,
+	output reg StallD,
+	output reg ForwardAD,
+	output reg ForwardBD,
+	output reg FlushE,
 	output reg [1:0] ForwardAE,
-	output reg [1:0] ForwardBE,
+	output reg [1:0] ForwardBE
    );
+	
+	reg lwstall;
 	
 always@(*)
 begin
+
+	// Explicado en páginas 407 y 410
+	
+	//La unidad detecta si debe cortocircuitar, establece selectores MUXs
+	//Debe cortocircuitar si la etapa escribe un registro destino que se usa como origen.
+	
 	if ((RsE != 0) && (RsE == WriteRegM) && RegWriteM)
 	ForwardAE = 2'b10;
 	else if ((RsE != 0) && (RsE == WriteRegW) && RegWriteW)
@@ -49,12 +57,23 @@ begin
 	else
 	ForwardAE = 2'b00;
 	
+	//Debe cortocircuitar si la etapa escribe un registro destino que se usa como origen.
+	
 	if ((RtE != 0) && (RtE == WriteRegM) && RegWriteM)
 	ForwardBE = 2'b10;
 	else if ((RtE != 0) && (RtE == WriteRegW) && RegWriteW)
 	ForwardBE = 2'b01;
 	else
 	ForwardBE = 2'b00;
+	
+	ForwardAD = (RsD != 0) && (RsD == WriteRegM) && RegWriteM;
+	ForwardBD = (RtD != 0) && (RtD == WriteRegM) && RegWriteM;
+	
+	lwstall = ((RsD == RtE) || (RtD == RtE)) && MemToReg;
+	StallF = lwstall;
+	StallD = lwstall;
+	FlushE = lwstall;
+	
 end
 
 endmodule
