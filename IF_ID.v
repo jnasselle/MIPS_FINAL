@@ -29,7 +29,7 @@ module IF_ID(
 always@ (clk)	//Latch,por nivel
 begin
 	instruccionOut<=instruccionIn;
-	NextPCOut<= NextPCIn;
+	PC4Out<= PC4In;
 end
 
 

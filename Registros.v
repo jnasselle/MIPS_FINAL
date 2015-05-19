@@ -31,7 +31,7 @@ module Registros( input clk,
 	reg [31:0] registro[31:0];
 	always@(posedge clk)
 	begin
-		if(write_en) registro[A3In]<=WD3In;
+		if(WE3) registro[A3In]<=WD3In;
 		RD1Out<=registro[A1In];
 		RD2Out<=registro[A2In];
 	end
