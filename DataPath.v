@@ -27,17 +27,85 @@ module DataPath(
 /*
 	ETAPA DE FETCH
 */
-wire [31:0] IF_PC_Out;
 wire [31:0] IF_PC_Out4;
 wire [31:0] IF_PC_In;
 wire [31:0] IF_RD;
 reg [31:0] IF_PC;	//Program Counter.Ver si no hacer un modulo
+
 always@(clk)
 begin	//falta if para ver si es por nivel positivo o negativo
-	IF_PC_Out<=IF_PC;
+	IF_PC<=IF_PC_In;
 end
+
+/*
+	ETAPA DE DECODE
+*/
+
+wire [31:0] ID_PC4;
+wire [31:0] ID_Instruccion;
+wire ID_RegWrite;	//Se debe escribir un registro?
+wire ID_MemToReg;	//Existe writeback?
+wire ID_MemWrite;	//Se graba la memoria de dato? 
+wire [5:0] ID_ALUControl;	//Control de la ALU
+wire ID_ALUSrc;	//El operando de la ALU es un reg o un imm?
+wire ID_RegDest;	//El registro destino es rd o rt?
+wire	ID_RegDst;
+wire	ID_Branch;
+wire [31:0] ID_RD1;
+wire [31:0] ID_RD2;
+wire [31:0] ID_ImmExtendido;
+wire [31:0] ID_ImmExtendidoS2;	//ID_ImmExtendido<<2
+wire [31:0] ID_PCBranch;	
+
+/*
+	ETAPA DE EXECUTION
+*/
+
+wire EX_RegWrite;	//Se debe escribir un registro?
+wire EX_MemtoReg;	//Existe writeback?
+wire EX_MemWrite;	//Se graba la memoria de dato? 
+wire [6:0] EX_ALUControl;	//Control de la ALU
+wire EX_ALUSrc;	//El operando de la ALU es un reg o un imm?
+wire EX_RegDest;	//El registro destino es rd o rt?
+wire [31:0] EX_ALUOut;	//Salida de la ALU
+wire [4:0] EX_Rs;		// Salida Latch ID/IE
+wire [4:0] EX_Rt;		// Salida Latch ID/IE
+wire [4:0] EX_Rd; 	// Salida Latch ID/IE
+wire [31:0] EX_RD1;	// Salida Latch ID/IE
+wire [31:0] EX_RD2;	// Salida Latch ID/IE
+wire [4:0] EX_WriteReg;	//Salida EX_Mux2_RegDst
+wire [31:0] EX_SrcA;
+wire [31:0] EX_SrcB;
+wire EX_ForwardA;
+wire EX_ForwardB;
+wire [31:0] EX_WriteData;
+wire [31:0] EX_ImmExtendido;
+
+/*
+	ETAPA DE MEMORY
+*/
+
+wire MEM_RegWrite;	//Se debe escribir un registro?
+wire MEM_MemtoReg;	//Existe writeback?
+wire MEM_MemWrite;	//Se graba la memoria de datos?
+wire [31:0] MEM_ALUOut;
+wire [31:0] MEM_WriteData;
+wire [4:0] MEM_WriteReg;
+wire [31:0] MEM_RD;
+
+/*
+	ETAPA DE WRITEBACK
+*/
+
+wire WB_RegWrite;	//Se debe escribir un registro?
+wire WB_MemToReg;	//Existe writeback?
+wire [31:0] WB_ReadData;
+wire [31:0] WB_ALUOut;
+wire [4:0] WB_WriteReg;
+wire [31:0] WB_Result;
+
 Sumador IF_Sumador (
-    .op1(IF_PC_Out), //valor del PC
+    .op1(IF_PC), //valor del PC
     .op2(32'd4), //sumamos 4
     .result(IF_PC_Out4)
     );
@@ -68,29 +136,6 @@ IF_ID DataPath_IF_ID(
 	.instruccionOut(ID_Instruccion)		//Output
 );
 
-/*
-	ETAPA DE DECODE
-*/
-wire [31:0] ID_PC4;
-wire [31:0] ID_Instruccion;
-wire ID_RegWrite;	//Se debe escribir un registro?
-wire ID_MemToReg;	//Existe writeback?
-wire ID_MemWrite;	//Se graba la memoria de dato? 
-wire [6:0] ID_ALUControl;	//Control de la ALU
-wire ID_ALUSrc;	//El operando de la ALU es un reg o un imm?
-wire ID_RegDest;	//El registro destino es rd o rt?
-wire	[5:0]	ID_ALUControl;
-wire	ID_ALUSrc;
-wire	ID_RegWrite;
-wire	ID_MemtoReg;
-wire	ID_MemWrite;
-wire	ID_RegDst;
-wire	ID_Branch;
-wire [31:0] ID_RD1;
-wire [31:0] ID_RD2;
-wire [31:0] ID_ImmExtendido;
-wire [31:0] ID_ImmExtendidoS2;	//ID_ImmExtendido<<2
-wire [31:0] ID_PCBranch;	
 
 Registros ID_Registros (
     .clk(clk), 
@@ -183,29 +228,7 @@ ID_EX DataPath_ID_EX (
     );	 
 	 
 	 
-/*
-	ETAPA DE EXECUTION
-*/
 
-wire EX_RegWrite;	//Se debe escribir un registro?
-wire EX_MemtoReg;	//Existe writeback?
-wire EX_MemWrite;	//Se graba la memoria de dato? 
-wire [6:0] EX_ALUControl;	//Control de la ALU
-wire EX_ALUSrc;	//El operando de la ALU es un reg o un imm?
-wire EX_RegDest;	//El registro destino es rd o rt?
-wire [31:0] EX_ALUOut;	//Salida de la ALU
-wire [4:0] EX_Rs;		// Salida Latch ID/IE
-wire [4:0] EX_Rt;		// Salida Latch ID/IE
-wire [4:0] EX_Rd; 	// Salida Latch ID/IE
-wire [31:0] EX_RD1;	// Salida Latch ID/IE
-wire [31:0] EX_RD2;	// Salida Latch ID/IE
-wire [4:0] EX_WriteReg;	//Salida EX_Mux2_RegDst
-wire [31:0] EX_SrcA;
-wire [31:0] EX_SrcB;
-wire EX_ForwardA;
-wire EX_ForwardB;
-wire [31:0] EX_WriteData;
-wire [31:0] EX_ImmExtendido; 
 
 
 Mux2 EX_Mux2_RegDst (
@@ -270,17 +293,7 @@ EX_MEM DataPath_EX_MEM (
     .WriteRegOut(MEM_WriteReg) //Direccion de Registro
     );
 
-/*
-	ETAPA DE MEMORY
-*/
 
-wire MEM_RegWrite;	//Se debe escribir un registro?
-wire MEM_MemtoReg;	//Existe writeback?
-wire MEM_MemWrite;	//Se graba la memoria de datos?
-wire [31:0] MEM_ALUOut;
-wire [31:0] MEM_WriteData;
-wire [4:0] MEM_WriteReg;
-wire [31:0] MEM_RD;
 
 MemDatos IF_MemDatos (
   .clka(clk), // input clka
@@ -312,16 +325,7 @@ MEM_WB DataPath_MEM_WB (
 
 
 
-/*
-	ETAPA DE WRITEBACK
-*/
 
-wire WB_RegWrite;	//Se debe escribir un registro?
-wire WB_MemToReg;	//Existe writeback?
-wire [31:0] WB_ReadData;
-wire [31:0] WB_ALUOut;
-wire [4:0] WB_WriteReg;
-wire [31:0] WB_Result;
 
 Mux2 WB_Mux2_MemToReg (
     .in0(WB_ReadData), 
