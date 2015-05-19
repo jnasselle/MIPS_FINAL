@@ -31,6 +31,8 @@ wire [31:0] IF_PC_Out4;
 wire [31:0] IF_PC_In;
 wire [31:0] IF_RD;
 reg [31:0] IF_PC;	//Program Counter.Ver si no hacer un modulo
+wire IF_Stall;
+
 
 always@(clk)
 begin	//falta if para ver si es por nivel positivo o negativo
@@ -55,7 +57,13 @@ wire [31:0] ID_RD1;
 wire [31:0] ID_RD2;
 wire [31:0] ID_ImmExtendido;
 wire [31:0] ID_ImmExtendidoS2;	//ID_ImmExtendido<<2
-wire [31:0] ID_PCBranch;	
+wire [31:0] ID_PCBranch;
+wire ID_ForwardA;
+wire ID_ForwardB;
+wire ID_Mux2_RD1_Out;
+wire ID_Mux2_RD2_Out;
+wire ID_Equal;
+wire ID_PCSrc;
 
 /*
 	ETAPA DE EXECUTION
@@ -76,8 +84,8 @@ wire [31:0] EX_RD2;	// Salida Latch ID/IE
 wire [4:0] EX_WriteReg;	//Salida EX_Mux2_RegDst
 wire [31:0] EX_SrcA;
 wire [31:0] EX_SrcB;
-wire EX_ForwardA;
-wire EX_ForwardB;
+wire [1:0] EX_ForwardA;
+wire [1:0] EX_ForwardB;
 wire [31:0] EX_WriteData;
 wire [31:0] EX_ImmExtendido;
 
@@ -111,16 +119,16 @@ Sumador IF_Sumador (
     );
 	 
 Mux2 IF_Mux2 (
-    .in0(ID_PCBranch), 	//TODO: sumador de ID para jumps
+    .in0(ID_PCBranch), 	//Direccion de Jump
     .in1(IF_PC_Out4), //Salida del sumador
     .out(IF_PC_In), //Va al PC
-    .sel(sel)	//TODO!
+    .sel(IF_Stall)
     );
 
 	 
 MemInstrucciones MEM_MemInstrucciones (
   .clka(clk), 	// input clka
-  .addra(IF_PC_Out), 	// input [31 : 0] addra
+  .addra(IF_PC), 	// input [31 : 0] addra
   .douta(IF_RD) 	// output [31 : 0] douta
 );
 
@@ -143,27 +151,29 @@ Registros ID_Registros (
     .A1In(ID_Instruccion[25:21]), 
     .A2In(ID_Instruccion[20:16]), 
     .A3In(ID_Instruccion[15:11]), 
-    .WD3In(),	//TODO!! 
-    .WE3(), //TODO!!
+    .WD3In(WB_Result),
+    .WE3(EX_RegWrite),
     .RD1Out(ID_RD1), 
     .RD2Out(ID_RD2)
     );
 
 Mux2 ID_Mux2_RD1 (
     .in0(ID_RD1), 
-    .in1(),	//TODO!!
-    .out(),	//TODO!!
-    .sel()	//TODO!!
+    .in1(EX_ALUOut),
+    .out(ID_Mux2_RD1_Out),
+    .sel(ID_ForwardA)
     );
 	 
 Mux2 ID_Mux2_RD2 (
     .in0(ID_RD2), 
-    .in1(),	//TODO!!
-    .out(), //TODO!!
-    .sel()	//TODO!!
+    .in1(EX_ALUOut),
+    .out(ID_Mux2_RD2_Out),
+    .sel(ID_ForwardB)
     );
 
-//TODO!! FALTA COMPARADOR PARA BEQ
+//Comparador y and para soportar branch
+assign ID_Equal=(ID_Mux2_RD1_Out==ID_Mux2_RD2_Out);
+assign ID_PCSrc=ID_Branch && ID_Equal;
 
 Extension ID_Extension (
     .data_in(ID_Instruccion[15:0]), 
@@ -210,10 +220,9 @@ ID_EX DataPath_ID_EX (
     .MemtoRegIn(ID_MemtoReg), 
     .MemWriteIn(ID_MemWrite), 
     .RegDstIn(ID_RegDst), 
-    .BranchIn(ID_Branch), 
 ////////////////////////////////////////////////////////////////////////////////////
     .RegData1Out(EX_RD1), 
-    .RegData2Out(EX_RD1), 
+    .RegData2Out(EX_RD2), 
     .ExtendidoOut(EX_ImmExtendido), 
     .rsOut(EX_Rs), 
     .rtOut(EX_Rt), 
@@ -224,7 +233,6 @@ ID_EX DataPath_ID_EX (
     .MemtoRegOut(EX_MemtoReg), 
     .MemWriteOut(EX_MemWrite), 
     .RegDstOut(EX_RegDest), 
-    .BranchOut(BranchOut) //????
     );	 
 	 
 	 
@@ -240,18 +248,18 @@ Mux2 EX_Mux2_RegDst (
 	 
 Mux4 EX_Mux4_ForwardA (
     .in0(EX_RD1), 
-    .in1(MEM_ALUOut), 
-    .in2(WB_Result), 
-    .in3(in3), //TODO!!
+    .in1(WB_Result), 
+    .in2(MEM_ALUOut), 
+    .in3(),
     .out(EX_SrcA), 
     .sel(EX_ForwardA)
     );
 
 Mux4 EX_Mux4_ForwardB (
     .in0(EX_RD2), 
-    .in1(MEM_ALUOut), 
-    .in2(WB_Result), 
-    .in3(in3), //TODO!!
+    .in1(WB_Result), 
+    .in2(MEM_ALUOut), 
+    .in3(),
     .out(EX_WriteData), 
     .sel(EX_ForwardB)
     );
@@ -312,19 +320,15 @@ MEM_WB DataPath_MEM_WB (
     .MemDataIn(MEM_RD), 
     .ALUDataIn(ALUDataIn), 
     .WriteRegIn(MEM_WriteReg), 
-    .RegWritwIn(MEM_RegWrite), 
+    .RegWriteIn(MEM_RegWrite), 
     .MemtoRegIn(MEM_MemtoReg),
 	//Outputs	 
     .MemDataOut(MemDataOut), 
     .ALUDataOut(ALUDataOut), 
-    .WriteBackRegOut(WriteBackRegOut), 
-    .RegWritwOut(RegWritwOut), 
+    .WriteRegOut(WriteRegOut), 
+    .RegWriteOut(RegWriteOut), 
     .MemtoRegOut(MemtoRegOut)
     );
-
-
-
-
 
 
 Mux2 WB_Mux2_MemToReg (
