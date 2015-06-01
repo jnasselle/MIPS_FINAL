@@ -22,14 +22,14 @@ module ControlUnit(
 	input [5:0] Op,
 	input [5:0] Funct, //Es necesario que pase por este modulo?
 //	input zero,
-	output MemtoReg,
-	output MemWrite,
+	output reg MemtoReg,
+	output reg MemWrite,
 //	output pcscr,			para la AND
-	output ALUSrc,
-	output RegDst,
-	output RegWrite,
-	output Branch,
-	output [5:0] ALUControl //salida en caso de ser necesario.
+	output reg ALUSrc,
+	output reg RegDst,
+	output reg RegWrite,
+	output reg Branch,
+	output reg[5:0] ALUControl //salida en caso de ser necesario.
    );
 	
 localparam TIPOR = 6'b000000;
@@ -50,12 +50,13 @@ localparam SB = 6'b101000;
 localparam SH = 6'b101001;
 localparam SLTI = 6'b001010;
 localparam SLTIU = 6'b001011;
+localparam SW = 6'b101011;
 localparam XORI = 6'b001110;
-localparam TIPOR = 6'b000000;
 
 
-
-case(op)
+always @(*)
+begin
+case(Op)
 	TIPOR:
 		begin
 			assign ALUControl=Funct;	
@@ -63,7 +64,7 @@ case(op)
 			MemWrite=0;
 			ALUSrc=0;
 			RegDst=1;
-			Regwrie=1;
+			RegWrite=1;
 			Branch=0;
 		end
 	ADDI:
@@ -73,7 +74,7 @@ case(op)
 			MemWrite=0;
 			ALUSrc=1;
 			RegDst=0;//
-			Regwrie=1;
+			RegWrite=1;
 			Branch=0;
 		end
 	ADDIU:
@@ -83,7 +84,7 @@ case(op)
 			MemWrite=0;
 			ALUSrc=1;
 			RegDst=0;//
-			Regwrie=1;
+			RegWrite=1;
 			Branch=0;
 		end 
 	ANDI:
@@ -93,7 +94,7 @@ case(op)
 			MemWrite=0;
 			ALUSrc=1;
 			RegDst=0;//
-			Regwrie=1;
+			RegWrite=1;
 			Branch=0;
 		end 
 	BEQ:
@@ -103,7 +104,7 @@ case(op)
 			MemWrite=0;//
 			ALUSrc=1;//
 			RegDst=0;//
-			Regwrie=0;//
+			RegWrite=0;//
 			Branch=1;
 		end  
 	BNE:
@@ -113,7 +114,7 @@ case(op)
 			MemWrite=0;//
 			ALUSrc=1;//
 			RegDst=0;//
-			Regwrie=0;//
+			RegWrite=0;//
 			Branch=1;
 		end   
 	LB:
@@ -123,7 +124,7 @@ case(op)
 			MemWrite=0;
 			ALUSrc=1;
 			RegDst=0;//
-			Regwrie=1;
+			RegWrite=1;
 			Branch=0;
 		end  
 	LBU:
@@ -133,7 +134,7 @@ case(op)
 			MemWrite=0;
 			ALUSrc=1;
 			RegDst=0;//
-			Regwrie=1;
+			RegWrite=1;
 			Branch=0;
 		end 
 	LH:
@@ -143,7 +144,7 @@ case(op)
 			MemWrite=0;
 			ALUSrc=1;
 			RegDst=0;//
-			Regwrie=1;
+			RegWrite=1;
 			Branch=0;
 		end 
 	LHU:
@@ -153,7 +154,7 @@ case(op)
 			MemWrite=0;
 			ALUSrc=1;
 			RegDst=0;//
-			Regwrie=1;
+			RegWrite=1;
 			Branch=0;
 		end 
 	LUI:
@@ -163,7 +164,7 @@ case(op)
 			MemWrite=0;
 			ALUSrc=1;
 			RegDst=0;//
-			Regwrie=1;
+			RegWrite=1;
 			Branch=0;
 		end 
 	LW:
@@ -173,7 +174,7 @@ case(op)
 			MemWrite=0;
 			ALUSrc=1;
 			RegDst=0;//
-			Regwrie=1;
+			RegWrite=1;
 			Branch=0;
 		end 
 	LWU:
@@ -183,7 +184,7 @@ case(op)
 			MemWrite=0;
 			ALUSrc=1;
 			RegDst=0;//
-			Regwrie=1;
+			RegWrite=1;
 			Branch=0;
 		end 
 	ORI:
@@ -193,7 +194,7 @@ case(op)
 			MemWrite=0;
 			ALUSrc=1;
 			RegDst=1;//
-			Regwrie=1;
+			RegWrite=1;
 			Branch=0;
 		end 
 	SB:
@@ -203,7 +204,7 @@ case(op)
 			MemWrite=1;
 			ALUSrc=1;
 			RegDst=0;//
-			Regwrie=0;
+			RegWrite=0;
 			Branch=0;
 		end 
 	SH:
@@ -213,7 +214,7 @@ case(op)
 			MemWrite=1;
 			ALUSrc=1;
 			RegDst=0;//
-			Regwrie=o;
+			RegWrite=0;
 			Branch=0;
 		end
 	SLTI:
@@ -223,7 +224,7 @@ case(op)
 			MemWrite=0;
 			ALUSrc=1;
 			RegDst=0;//
-			Regwrie=1;
+			RegWrite=1;
 			Branch=0;
 		end  
 	SLTIU:
@@ -233,7 +234,7 @@ case(op)
 			MemWrite=0;
 			ALUSrc=1;
 			RegDst=0;//
-			Regwrie=0;
+			RegWrite=0;
 			Branch=0;
 		end  
 	SW:
@@ -243,7 +244,7 @@ case(op)
 			MemWrite=1;
 			ALUSrc=1;
 			RegDst=0;//
-			Regwrie=1;
+			RegWrite=1;
 			Branch=0;
 		end
 	XORI:
@@ -253,11 +254,11 @@ case(op)
 			MemWrite=0;
 			ALUSrc=1;
 			RegDst=1;//
-			Regwrie=1;
+			RegWrite=1;
 			Branch=0;
 		end  
-	
-		
+endcase	
+end		
 		
 //	reg [6:0] controls;
 //	assign {RegWrite, RegDst, ALUSrc, Branch, MemWrite, MemtoReg, Branch} controls;
