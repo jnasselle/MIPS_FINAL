@@ -193,6 +193,7 @@ Sumador ID_Sumador (
     );
 
 /////////////////////////////////ControlUnit///////////////////////////////////////	 
+
 ControlUnit DataPath_ControlUnit (
     .Op(ID_Instruccion[31:26]), 
     .Funct(ID_Instruccion[5:0]), 
@@ -203,8 +204,32 @@ ControlUnit DataPath_ControlUnit (
     .RegWrite(ID_RegWrite), 
     .Branch(ID_Branch), 
     .ALUControl(ID_ALUControl)
-    );	 
-	 
+    );
+/*
+/////////////////////////////////HazardUnit///////////////////////////////////////	 
+HazardUnit DataPath_HazardUnit (
+    .RsD(RsD), 
+    .RtD(RtD), 
+    .RsE(RsE), 
+    .RtE(RtE), 
+    .WriteRegE(WriteRegE), 
+    .WriteRegM(WriteRegM), 
+    .WriteRegW(WriteRegW), 
+    .RegWriteE(RegWriteE), 
+    .RegWriteM(RegWriteM), 
+    .RegWriteW(RegWriteW), 
+    .MemToRegE(MemToRegE), 
+    .MemToRegM(MemToRegM), 
+    .BranchD(BranchD), 
+    .StallF(StallF), 
+    .StallD(StallD), 
+    .ForwardAD(ForwardAD), 
+    .ForwardBD(ForwardBD), 
+    .FlushE(FlushE), 
+    .ForwardAE(ForwardAE), 
+    .ForwardBE(ForwardBE)
+    );
+*/	 
 //////////////////////////////////ID_EX////////////////////////////////////////////	 
 ID_EX DataPath_ID_EX (
     .clk(clk), 
@@ -232,7 +257,7 @@ ID_EX DataPath_ID_EX (
     .RegWriteOut(EX_RegWrite), 
     .MemtoRegOut(EX_MemtoReg), 
     .MemWriteOut(EX_MemWrite), 
-    .RegDstOut(EX_RegDest), 
+    .RegDstOut(EX_RegDest) 
     );	 
 	 
 	 
@@ -250,7 +275,7 @@ Mux4 EX_Mux4_ForwardA (
     .in0(EX_RD1), 
     .in1(WB_Result), 
     .in2(MEM_ALUOut), 
-    .in3(),
+    .in3(MEM_ALUOut),
     .out(EX_SrcA), 
     .sel(EX_ForwardA)
     );

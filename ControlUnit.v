@@ -29,7 +29,7 @@ module ControlUnit(
 	output reg RegDst,
 	output reg RegWrite,
 	output reg Branch,
-	output reg[5:0] ALUControl //salida en caso de ser necesario.
+	output reg [5:0] ALUControl //salida en caso de ser necesario.
    );
 	
 localparam TIPOR = 6'b000000;
@@ -59,7 +59,7 @@ begin
 case(Op)
 	TIPOR:
 		begin
-			assign ALUControl=Funct;	
+			ALUControl=Funct;	
 			MemtoReg=0;
 			MemWrite=0;
 			ALUSrc=0;
@@ -69,7 +69,7 @@ case(Op)
 		end
 	ADDI:
 		begin
-			assign ALUControl= 6'b100000;	
+			ALUControl= 6'b100000;	
 			MemtoReg=0;
 			MemWrite=0;
 			ALUSrc=1;
@@ -79,7 +79,7 @@ case(Op)
 		end
 	ADDIU:
 		begin
-			assign ALUControl= 6'b100001;	
+			ALUControl= 6'b100001;	
 			MemtoReg=0;
 			MemWrite=0;
 			ALUSrc=1;
@@ -89,7 +89,7 @@ case(Op)
 		end 
 	ANDI:
 		begin
-			assign ALUControl= 6'b100100;	
+			ALUControl= 6'b100100;	
 			MemtoReg=0;
 			MemWrite=0;
 			ALUSrc=1;
@@ -99,7 +99,7 @@ case(Op)
 		end 
 	BEQ:
 		begin
-			assign ALUControl= 6'b100000;	
+			ALUControl= 6'b100000;	
 			MemtoReg=0;//
 			MemWrite=0;//
 			ALUSrc=1;//
@@ -109,7 +109,7 @@ case(Op)
 		end  
 	BNE:
 		begin
-			assign ALUControl= 6'b100000;	
+			ALUControl= 6'b100000;	
 			MemtoReg=0;//
 			MemWrite=0;//
 			ALUSrc=1;//
@@ -119,7 +119,7 @@ case(Op)
 		end   
 	LB:
 		begin
-			assign ALUControl= 6'b100000;	
+			ALUControl= 6'b100000;	
 			MemtoReg=1;//
 			MemWrite=0;
 			ALUSrc=1;
@@ -129,7 +129,7 @@ case(Op)
 		end  
 	LBU:
 		begin
-			assign ALUControl= 6'b100001;	
+			ALUControl= 6'b100001;	
 			MemtoReg=1;//
 			MemWrite=0;
 			ALUSrc=1;
@@ -139,7 +139,7 @@ case(Op)
 		end 
 	LH:
 		begin
-			assign ALUControl= 6'b100000;	
+			ALUControl= 6'b100000;	
 			MemtoReg=1;//
 			MemWrite=0;
 			ALUSrc=1;
@@ -149,7 +149,7 @@ case(Op)
 		end 
 	LHU:
 		begin
-			assign ALUControl= 6'b100001;	
+			ALUControl= 6'b100001;	
 			MemtoReg=1;//
 			MemWrite=0;
 			ALUSrc=1;
@@ -159,7 +159,7 @@ case(Op)
 		end 
 	LUI:
 		begin
-			assign ALUControl= 6'b000000;	
+			ALUControl= 6'b000000;	
 			MemtoReg=1;//
 			MemWrite=0;
 			ALUSrc=1;
@@ -169,7 +169,7 @@ case(Op)
 		end 
 	LW:
 		begin
-			assign ALUControl= 6'b100000;	
+			ALUControl= 6'b100000;	
 			MemtoReg=1;//
 			MemWrite=0;
 			ALUSrc=1;
@@ -179,7 +179,7 @@ case(Op)
 		end 
 	LWU:
 		begin
-			assign ALUControl= 6'b100001;	
+			ALUControl= 6'b100001;	
 			MemtoReg=1;//
 			MemWrite=0;
 			ALUSrc=1;
@@ -189,7 +189,7 @@ case(Op)
 		end 
 	ORI:
 		begin
-			assign ALUControl= 6'b100101;	
+			ALUControl= 6'b100101;	
 			MemtoReg=0;//
 			MemWrite=0;
 			ALUSrc=1;
@@ -199,7 +199,7 @@ case(Op)
 		end 
 	SB:
 		begin
-			assign ALUControl= 6'b100000;	
+			ALUControl= 6'b100000;	
 			MemtoReg=0;//
 			MemWrite=1;
 			ALUSrc=1;
@@ -209,7 +209,7 @@ case(Op)
 		end 
 	SH:
 		begin
-			assign ALUControl= 6'b100000;	
+			ALUControl= 6'b100000;	
 			MemtoReg=0;//
 			MemWrite=1;
 			ALUSrc=1;
@@ -219,7 +219,7 @@ case(Op)
 		end
 	SLTI:
 		begin
-			assign ALUControl= 6'b101010;	
+			ALUControl= 6'b101010;	
 			MemtoReg=0;//
 			MemWrite=0;
 			ALUSrc=1;
@@ -229,7 +229,7 @@ case(Op)
 		end  
 	SLTIU:
 		begin
-			assign ALUControl= 6'b101011;	
+			ALUControl= 6'b101011;	
 			MemtoReg=0;//
 			MemWrite=0;
 			ALUSrc=1;
@@ -239,7 +239,7 @@ case(Op)
 		end  
 	SW:
 		begin
-			assign ALUControl= 6'b100000;	
+			ALUControl= 6'b100000;	
 			MemtoReg=0;//
 			MemWrite=1;
 			ALUSrc=1;
@@ -249,7 +249,7 @@ case(Op)
 		end
 	XORI:
 		begin
-			assign ALUControl= 6'b100110;	
+			ALUControl= 6'b100110;	
 			MemtoReg=0;//
 			MemWrite=0;
 			ALUSrc=1;
