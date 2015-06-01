@@ -164,7 +164,8 @@ Mux2 ID_Mux2_RD1 (
     .out(ID_Mux2_RD1_Out),
     .sel(ID_ForwardA)
     );
-	 
+
+
 Mux2 ID_Mux2_RD2 (
     .in0(ID_RD2), 
     .in1(EX_ALUOut),
@@ -210,33 +211,33 @@ ControlUnit DataPath_ControlUnit (
 
 /////////////////////////////////HazardUnit///////////////////////////////////////	 
 HazardUnit DataPath_HazardUnit (
-    .RsD(RsD), 
-    .RtD(RtD), 
-    .RsE(RsE), 
-    .RtE(RtE), 
+    .RsD(ID_Instruccion[25:21]), 
+    .RtD(ID_Instruccion[20:16]), 
+    .RsE(EX_Rs), 
+    .RtE(EX_Rt), 
     .WriteRegE(WriteRegE), 
-    .WriteRegM(WriteRegM), 
-    .WriteRegW(WriteRegW), 
-    .RegWriteE(RegWriteE), 
-    .RegWriteM(RegWriteM), 
-    .RegWriteW(RegWriteW), 
-    .MemToRegE(MemToRegE), 
-    .MemToRegM(MemToRegM), 
-    .BranchD(BranchD), 
+    .WriteRegM(MEM_WriteReg), 
+    .WriteRegW(WB_WriteReg), 
+    .RegWriteE(EX_RegWrite), 
+    .RegWriteM(MEM_RegWrite), 
+    .RegWriteW(WB_RegWrite), 
+    .MemToRegE(EX_MemtoReg), 
+    .MemToRegM(MEM_MemtoReg), 
+    .BranchD(ID_Branch), 
     .StallF(StallF), 
     .StallD(StallD), 
-    .ForwardAD(ForwardAD), 
-    .ForwardBD(ForwardBD), 
+    .ForwardAD(ID_ForwardA), 
+    .ForwardBD(ID_ForwardB), 
     .FlushE(FlushE), 
-    .ForwardAE(ForwardAE), 
-    .ForwardBE(ForwardBE)
+    .ForwardAE(EX_ForwardA), 
+    .ForwardBE(EX_ForwardB)
     );
 	 
 //////////////////////////////////ID_EX////////////////////////////////////////////	 
 ID_EX DataPath_ID_EX (
     .clk(clk), 
-    .RegData1In(ID_Mux2_RD1_Out), 
-    .RegData2In(ID_Mux2_RD2_Out), 
+    .RegData1In(ID_RD1), 
+    .RegData2In(ID_RD2), 
     .ExtendidoIn(ID_ImmExtendido), 
     .rsIn(ID_Instruccion[25:21]), 
     .rtIn(ID_Instruccion[20:16]), 
@@ -263,13 +264,13 @@ ID_EX DataPath_ID_EX (
     );	 
 	 
 
-
-Mux3 EX_Mux3_DstReg (
+Mux3 EX_Mux3_RegDst (
     .in0(EX_Rt), 
-    .in1(EX_Rd), 
+    .in1(EX_Rs), 
     .out(EX_WriteReg), 
     .sel(EX_RegDest)
     );
+
 	 
 Mux4 EX_Mux4_ForwardA (
     .in0(EX_RD1), 

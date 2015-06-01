@@ -18,11 +18,7 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module Mux3
-  #(
-	 //parameter WIDTH = 5   //Ancho de la direccion de memoria.
-	 )
-	(
+module Mux3(
     input  [4:0] in0,
     input  [4:0] in1,
     output reg [4:0] out,
