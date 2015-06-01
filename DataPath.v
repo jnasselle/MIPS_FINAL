@@ -260,11 +260,9 @@ ID_EX DataPath_ID_EX (
     .RegDstOut(EX_RegDest) 
     );	 
 	 
-	 
 
 
-
-Mux2 EX_Mux2_RegDst (
+Mux2_4 EX_Mux2_RegDst (
     .in0(EX_Rt), 
     .in1(EX_Rd), 
     .out(EX_WriteReg), 
@@ -312,7 +310,7 @@ EX_MEM DataPath_EX_MEM (
 	  //Inputs
     .clk(clk),
     .RegWriteIn(EX_RegWrite), //Control
-    .MemtoRegIn(EX_MemToReg), //Control
+    .MemtoRegIn(EX_MemtoReg), //Control
     .MemWriteIn(EX_MemWrite), //Control
     .ALUResultIn(EX_ALUOut),	//Datos
     .WriteRegIn(EX_WriteReg), //Numero de Registro para writeback
@@ -343,7 +341,7 @@ MemDatos IF_MemDatos (
 MEM_WB DataPath_MEM_WB (
     .clk(clk), 
     .MemDataIn(MEM_RD), 
-    .ALUDataIn(ALUDataIn), 
+    .ALUDataIn(MEM_ALUOut), 
     .WriteRegIn(MEM_WriteReg), 
     .RegWriteIn(MEM_RegWrite), 
     .MemtoRegIn(MEM_MemtoReg),
