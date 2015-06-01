@@ -152,7 +152,7 @@ Registros ID_Registros (
     .A2In(ID_Instruccion[20:16]), 
     .A3In(ID_Instruccion[15:11]), 
     .WD3In(WB_Result),
-    .WE3(EX_RegWrite),
+    .WE3(WB_RegWrite),
     .RD1Out(ID_RD1), 
     .RD2Out(ID_RD2)
     );
@@ -348,11 +348,11 @@ MEM_WB DataPath_MEM_WB (
     .RegWriteIn(MEM_RegWrite), 
     .MemtoRegIn(MEM_MemtoReg),
 	//Outputs	 
-    .MemDataOut(MemDataOut), 
-    .ALUDataOut(ALUDataOut), 
-    .WriteRegOut(WriteRegOut), 
-    .RegWriteOut(RegWriteOut), 
-    .MemtoRegOut(MemtoRegOut)
+    .MemDataOut(WB_ReadData), 
+    .ALUDataOut(WB_ALUOut), 
+    .WriteRegOut(WB_WriteReg), 
+    .RegWriteOut(WB_RegWrite), 
+    .MemtoRegOut(WB_MemToReg)
     );
 
 
