@@ -31,7 +31,7 @@ module EX_MEM(
 	output reg MemtoRegOut,
 	output reg MemWriteOut,
 	output reg [31:0] ALUResultOut,
-	output reg [5:0] WriteRegOut,		//Para cuando se quiere el resultado en un registro o un load
+	output reg [4:0] WriteRegOut,		//Para cuando se quiere el resultado en un registro o un load
 	output reg [31:0] WriteDataOut
     );
 

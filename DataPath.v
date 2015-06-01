@@ -60,8 +60,8 @@ wire [31:0] ID_ImmExtendidoS2;	//ID_ImmExtendido<<2
 wire [31:0] ID_PCBranch;
 wire ID_ForwardA;
 wire ID_ForwardB;
-wire ID_Mux2_RD1_Out;
-wire ID_Mux2_RD2_Out;
+wire [31:0] ID_Mux2_RD1_Out;
+wire [31:0] ID_Mux2_RD2_Out;
 wire ID_Equal;
 wire ID_PCSrc;
 
@@ -157,6 +157,7 @@ Registros ID_Registros (
     .RD2Out(ID_RD2)
     );
 
+
 Mux2 ID_Mux2_RD1 (
     .in0(ID_RD1), 
     .in1(EX_ALUOut),
@@ -170,6 +171,7 @@ Mux2 ID_Mux2_RD2 (
     .out(ID_Mux2_RD2_Out),
     .sel(ID_ForwardB)
     );
+
 
 //Comparador y and para soportar branch
 assign ID_Equal=(ID_Mux2_RD1_Out==ID_Mux2_RD2_Out);
@@ -205,7 +207,7 @@ ControlUnit DataPath_ControlUnit (
     .Branch(ID_Branch), 
     .ALUControl(ID_ALUControl)
     );
-/*
+
 /////////////////////////////////HazardUnit///////////////////////////////////////	 
 HazardUnit DataPath_HazardUnit (
     .RsD(RsD), 
@@ -229,12 +231,12 @@ HazardUnit DataPath_HazardUnit (
     .ForwardAE(ForwardAE), 
     .ForwardBE(ForwardBE)
     );
-*/	 
+	 
 //////////////////////////////////ID_EX////////////////////////////////////////////	 
 ID_EX DataPath_ID_EX (
     .clk(clk), 
-    .RegData1In(ID_RD1), 
-    .RegData2In(ID_RD2), 
+    .RegData1In(ID_Mux2_RD1_Out), 
+    .RegData2In(ID_Mux2_RD2_Out), 
     .ExtendidoIn(ID_ImmExtendido), 
     .rsIn(ID_Instruccion[25:21]), 
     .rtIn(ID_Instruccion[20:16]), 
@@ -257,12 +259,12 @@ ID_EX DataPath_ID_EX (
     .RegWriteOut(EX_RegWrite), 
     .MemtoRegOut(EX_MemtoReg), 
     .MemWriteOut(EX_MemWrite), 
-    .RegDstOut(EX_RegDest) 
+    .RegDstOut(EX_RegDest)	 
     );	 
 	 
 
 
-Mux2_4 EX_Mux2_RegDst (
+Mux3 EX_Mux3_DstReg (
     .in0(EX_Rt), 
     .in1(EX_Rd), 
     .out(EX_WriteReg), 

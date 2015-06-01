@@ -5,7 +5,7 @@
 // 
 // Create Date:    13:39:11 06/01/2015 
 // Design Name: 
-// Module Name:    Mux2_4 
+// Module Name:    Mux3 
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -18,14 +18,14 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module Mux2_4
+module Mux3
   #(
-	 parameter WIDTH = 5   //Ancho de la direccion de memoria.
+	 //parameter WIDTH = 5   //Ancho de la direccion de memoria.
 	 )
 	(
-    input  [WIDTH-1:0] in0,
-    input  [WIDTH-1:0] in1,
-    output reg [WIDTH-1:0] out,
+    input  [4:0] in0,
+    input  [4:0] in1,
+    output reg [4:0] out,
     input sel
     );
 
