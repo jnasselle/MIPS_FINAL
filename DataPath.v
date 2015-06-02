@@ -137,7 +137,7 @@ MemInstrucciones MEM_MemInstrucciones (
 */
 
 IF_ID DataPath_IF_ID(
-	.le(le),
+	.le(clk),
 	.instruccionIn(IF_RD),	//Input
 	.PC4In(IF_PC_Out4),
 	.PC4Out(ID_PC4),
@@ -235,7 +235,7 @@ HazardUnit DataPath_HazardUnit (
 	 
 //////////////////////////////////ID_EX////////////////////////////////////////////	 
 ID_EX DataPath_ID_EX (
-    .le(le), 
+    .le(clk), 
     .RegData1In(ID_RD1), 
     .RegData2In(ID_RD2), 
     .ExtendidoIn(ID_ImmExtendido), 
@@ -311,7 +311,7 @@ ALU EX_ALU (
 
 EX_MEM DataPath_EX_MEM (
 	  //Inputs
-    .le(le),
+    .le(clk),
     .RegWriteIn(EX_RegWrite), //Control
     .MemtoRegIn(EX_MemtoReg), //Control
     .MemWriteIn(EX_MemWrite), //Control
@@ -342,7 +342,7 @@ MemDatos IF_MemDatos (
 */
 
 MEM_WB DataPath_MEM_WB (
-    .le(le), 
+    .le(clk), 
     .MemDataIn(MEM_RD), 
     .ALUDataIn(MEM_ALUOut), 
     .WriteRegIn(MEM_WriteReg), 
