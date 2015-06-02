@@ -58,6 +58,7 @@ wire ID_ForwardB;
 wire [31:0] ID_Mux2_RD1_Out;
 wire [31:0] ID_Mux2_RD2_Out;
 wire ID_PCSrc;
+wire ID_Stall;
 
 /*
 	ETAPA DE EXECUTION
@@ -82,6 +83,7 @@ wire [1:0] EX_ForwardA;
 wire [1:0] EX_ForwardB;
 wire [31:0] EX_WriteData;
 wire [31:0] EX_ImmExtendido;
+wire EX_Flush;
 
 /*
 	ETAPA DE MEMORY
@@ -106,14 +108,14 @@ wire [31:0] WB_ALUOut;
 wire [4:0] WB_WriteReg;
 wire [31:0] WB_Result;
 
-/*
+
 Sumador IF_Sumador (
     .op1(IF_PC), //valor del PC
     .op2(32'd4), //sumamos 4
     .result(IF_PC_Out4)
     );
 
-*/ 
+
 Mux2 IF_Mux2 (
     .in0(ID_PCBranch), 	//Direccion de Jump
     .in1(IF_PC_Out4), //Salida del sumador
@@ -143,6 +145,8 @@ PC IF_PC_Module (
 
 IF_ID DataPath_IF_ID(
 	.le(clk),
+	.clear(ID_Stall),
+	.enable(ID_PCSrc),
 	.instruccionIn(IF_RD),	//Input
 	.PC4In(IF_PC_Out4),
 	.PC4Out(ID_PC4),
@@ -162,22 +166,21 @@ Registros ID_Registros (
     .RD2Out(ID_RD2)
     );
 
-/*/Nosale
+
 Mux2 ID_Mux2_RD1 (
-    .in0(ID_RD1), 
+    .in0(ID_RD2), 
     .in1(EX_ALUOut),
     .out(ID_Mux2_RD1_Out),
     .sel(ID_ForwardA)
     );
 
-//Nosale
+
 Mux2 ID_Mux2_RD2 (
     .in0(ID_RD2), 
     .in1(EX_ALUOut),
     .out(ID_Mux2_RD2_Out),
     .sel(ID_ForwardB)
     );
-*/ 
 
 Equal ID_Equal (
     .BranchD(ID_Branch), 
@@ -186,20 +189,19 @@ Equal ID_Equal (
     .result(ID_PCSrc)
     );
 
-//Nosale
 Extension ID_Extension (
     .data_in(ID_Instruccion[15:0]), 
-    .data_out(ID_ImmExtendido), 
-    .tipo()	//TODO!!!
+    .data_out(ID_ImmExtendido)
+    //.tipo()	//TODO!!!
     );
 
-//Nosale
+
 ShiftIzq ID_ShiftIzq (
     .data_in(ID_ImmExtendido), 
     .data_out(ID_ImmExtendidoS2)
     );
 
-//Nosale 
+
 Sumador ID_Sumador (
     .op1(ID_ImmExtendidoS2), 
     .op2(ID_PC4), 
@@ -237,11 +239,11 @@ HazardUnit DataPath_HazardUnit (
     .MemToRegE(EX_MemtoReg), 
     .MemToRegM(MEM_MemtoReg), 
     .BranchD(ID_Branch), 
-    .StallF(StallF), 
-    .StallD(StallD), 
+    .StallF(IF_Stall), 
+    .StallD(ID_Stall), 
     .ForwardAD(ID_ForwardA), 
     .ForwardBD(ID_ForwardB), 
-    .FlushE(FlushE), 
+    .FlushE(EX_Flush), 
     .ForwardAE(EX_ForwardA), 
     .ForwardBE(EX_ForwardB)
     );
@@ -250,7 +252,8 @@ HazardUnit DataPath_HazardUnit (
 	 
 //////////////////////////////////ID_EX////////////////////////////////////////////	 
 ID_EX DataPath_ID_EX (
-    .le(clk), 
+    .le(clk),
+	 .clear(EX_Flush),
     .RegData1In(ID_RD1), 
     .RegData2In(ID_RD2), 
     .ExtendidoIn(ID_ImmExtendido), 
@@ -300,7 +303,7 @@ Mux4 EX_Mux4_ForwardB (
     .in0(EX_RD2), 
     .in1(WB_Result), 
     .in2(MEM_ALUOut), 
-    .in3(),
+    .in3(MEM_ALUOut),
     .out(EX_WriteData), 
     .sel(EX_ForwardB)
     );

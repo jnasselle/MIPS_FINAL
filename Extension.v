@@ -18,11 +18,14 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module Extension( input [15:0] data_in,
-	input [31:0] data_out,
-	input tipo	//TRUE=>Con Signo,FALSE=>Sin Signo
+module Extension( 
+	input [15:0] data_in,
+	output [31:0] data_out
+	//input tipo	//TRUE=>Con Signo,FALSE=>Sin Signo
     );
-	assign data_out= tipo?{{16{data_in[15]}}, data_in}:{{16{0}}, data_in};
+	 assign data_out = {{16{data_in[15]}}, data_in};
+
+	//assign data_out= tipo?{{16{data_in[15]}}, data_in}:{{16{0}}, data_in};
 
 endmodule
 
