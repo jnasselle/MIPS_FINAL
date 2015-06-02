@@ -230,7 +230,7 @@ HazardUnit DataPath_HazardUnit (
     .RtD(ID_Instruccion[20:16]), 
     .RsE(EX_Rs), 
     .RtE(EX_Rt), 
-    .WriteRegE(WriteRegE), 
+    .WriteRegE(EX_WriteReg), 
     .WriteRegM(MEM_WriteReg), 
     .WriteRegW(WB_WriteReg), 
     .RegWriteE(EX_RegWrite), 
