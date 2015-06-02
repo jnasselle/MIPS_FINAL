@@ -20,6 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 module ID_EX(
 	input le,
+	input clear,	//Falta Implementar esto
 	input [31:0] RegData1In,
 	input [31:0] RegData2In,
 	input [31:0] ExtendidoIn,
