@@ -19,7 +19,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module ID_EX(
-	input clk,
+	input le,
 	input [31:0] RegData1In,
 	input [31:0] RegData2In,
 	input [31:0] ExtendidoIn,
@@ -48,8 +48,10 @@ module ID_EX(
 	output reg	BranchOut
     );
 
-always@(clk)
+always@(*)
 begin
+	if (le == 1'b1)
+	begin
 	RegData1Out<=RegData1In;
 	RegData2Out<=RegData2In;
 	ExtendidoOut<=ExtendidoIn;
@@ -63,6 +65,7 @@ begin
 	MemWriteOut<=MemWriteIn;
 	RegDstOut<=RegDstIn;
 	BranchOut<=BranchIn;
+	end
 end
 
 

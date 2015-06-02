@@ -19,17 +19,20 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module IF_ID(
-	input clk,
+	input le,
 	input [31:0] instruccionIn,
 	input [31:0] PC4In,	//PC+4
 	output reg [31:0] instruccionOut,
 	output reg [31:0] PC4Out
     );
 
-always@ (clk)	//Latch,por nivel
+always@ (*)	//Latch
 begin
+	if (le == 1'b1)
+	begin
 	instruccionOut<=instruccionIn;
 	PC4Out<= PC4In;
+	end
 end
 
 

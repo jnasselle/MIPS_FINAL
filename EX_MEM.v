@@ -19,8 +19,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module EX_MEM(
-	input clk,
-	
+	input le,
 	input RegWriteIn,
 	input MemtoRegIn,
 	input MemWriteIn,
@@ -35,14 +34,17 @@ module EX_MEM(
 	output reg [31:0] WriteDataOut
     );
 
-always@(clk)
+always@(*)
 begin
+	if (le == 1'b1)
+	begin
 	ALUResultOut	<=ALUResultIn;
 	WriteRegOut		<=WriteRegIn;
 	WriteDataOut	<=WriteDataIn;
 	RegWriteOut		<=RegWriteIn;
 	MemtoRegOut		<=MemtoRegIn;
 	MemWriteOut		<=MemWriteIn;
+	end
 end
 
 endmodule
