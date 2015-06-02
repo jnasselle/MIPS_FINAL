@@ -32,7 +32,6 @@ module ID_EX(
 	input	MemtoRegIn,
 	input	MemWriteIn,
 	input	RegDstIn,
-	input	BranchIn,
 	output reg [31:0] RegData1Out,
 	output reg [31:0] RegData2Out,
 	output reg [31:0] ExtendidoOut,
@@ -44,8 +43,7 @@ module ID_EX(
 	output reg	RegWriteOut,
 	output reg	MemtoRegOut,
 	output reg	MemWriteOut,
-	output reg	RegDstOut,
-	output reg	BranchOut
+	output reg	RegDstOut
     );
 
 always@(*)
@@ -64,7 +62,6 @@ begin
 	MemtoRegOut<=MemtoRegIn;
 	MemWriteOut<=MemWriteIn;
 	RegDstOut<=RegDstIn;
-	BranchOut<=BranchIn;
 	end
 end
 

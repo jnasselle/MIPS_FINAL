@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date:    15:41:34 03/04/2015 
+// Create Date:    12:43:07 06/02/2015 
 // Design Name: 
-// Module Name:    Sumador 
+// Module Name:    Equal 
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -18,14 +18,16 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module Sumador( 
-	input [31:0] op1,
-	input [31:0] op2,
-	output reg [31:0] result
-    );
-	always@(*)
+module Equal(
+    input BranchD,
+	 input [31:0] Data1,
+	 input [31:0] Data2,
+	 output reg result
+	 );
+
+always@(*)
 	begin
-	result=op1+op2;
+	result = Data1 && Data2 && BranchD;
 	end
 
 endmodule

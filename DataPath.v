@@ -30,14 +30,9 @@ module DataPath(
 wire [31:0] IF_PC_Out4;
 wire [31:0] IF_PC_In;
 wire [31:0] IF_RD;
-reg [31:0] IF_PC;	//Program Counter.Ver si no hacer un modulo
+wire [31:0] IF_PC;
 wire IF_Stall;
 
-
-always@(clk)
-begin	//falta if para ver si es por nivel positivo o negativo
-	IF_PC<=IF_PC_In;
-end
 
 /*
 	ETAPA DE DECODE
@@ -62,7 +57,6 @@ wire ID_ForwardA;
 wire ID_ForwardB;
 wire [31:0] ID_Mux2_RD1_Out;
 wire [31:0] ID_Mux2_RD2_Out;
-wire ID_Equal;
 wire ID_PCSrc;
 
 /*
@@ -112,17 +106,19 @@ wire [31:0] WB_ALUOut;
 wire [4:0] WB_WriteReg;
 wire [31:0] WB_Result;
 
+/*
 Sumador IF_Sumador (
     .op1(IF_PC), //valor del PC
     .op2(32'd4), //sumamos 4
     .result(IF_PC_Out4)
     );
-	 
+
+*/ 
 Mux2 IF_Mux2 (
     .in0(ID_PCBranch), 	//Direccion de Jump
     .in1(IF_PC_Out4), //Salida del sumador
     .out(IF_PC_In), //Va al PC
-    .sel(IF_Stall)
+    .sel(ID_PCSrc)
     );
 
 	 
@@ -135,6 +131,15 @@ MemInstrucciones MEM_MemInstrucciones (
 /*
 	LATCH IF/ID
 */
+
+/////////////// Program Counter  //////////////
+
+PC IF_PC_Module (
+    .clk(clk), 
+    .en(IF_Stall), 
+    .PCIn(IF_PC_In), 
+    .PCOut(IF_PC)
+    );
 
 IF_ID DataPath_IF_ID(
 	.le(clk),
@@ -157,7 +162,7 @@ Registros ID_Registros (
     .RD2Out(ID_RD2)
     );
 
-
+/*/Nosale
 Mux2 ID_Mux2_RD1 (
     .in0(ID_RD1), 
     .in1(EX_ALUOut),
@@ -165,30 +170,36 @@ Mux2 ID_Mux2_RD1 (
     .sel(ID_ForwardA)
     );
 
-
+//Nosale
 Mux2 ID_Mux2_RD2 (
     .in0(ID_RD2), 
     .in1(EX_ALUOut),
     .out(ID_Mux2_RD2_Out),
     .sel(ID_ForwardB)
     );
+*/ 
 
+Equal ID_Equal (
+    .BranchD(ID_Branch), 
+    .Data1(ID_Mux2_RD1_Out), 
+    .Data2(ID_Mux2_RD2_Out), 
+    .result(ID_PCSrc)
+    );
 
-//Comparador y and para soportar branch
-assign ID_Equal=(ID_Mux2_RD1_Out==ID_Mux2_RD2_Out);
-assign ID_PCSrc=ID_Branch && ID_Equal;
-
+//Nosale
 Extension ID_Extension (
     .data_in(ID_Instruccion[15:0]), 
     .data_out(ID_ImmExtendido), 
     .tipo()	//TODO!!!
     );
 
+//Nosale
 ShiftIzq ID_ShiftIzq (
     .data_in(ID_ImmExtendido), 
     .data_out(ID_ImmExtendidoS2)
     );
-	 
+
+//Nosale 
 Sumador ID_Sumador (
     .op1(ID_ImmExtendidoS2), 
     .op2(ID_PC4), 
@@ -210,6 +221,8 @@ ControlUnit DataPath_ControlUnit (
     );
 
 /////////////////////////////////HazardUnit///////////////////////////////////////	 
+
+
 HazardUnit DataPath_HazardUnit (
     .RsD(ID_Instruccion[25:21]), 
     .RtD(ID_Instruccion[20:16]), 
@@ -232,6 +245,8 @@ HazardUnit DataPath_HazardUnit (
     .ForwardAE(EX_ForwardA), 
     .ForwardBE(EX_ForwardB)
     );
+
+
 	 
 //////////////////////////////////ID_EX////////////////////////////////////////////	 
 ID_EX DataPath_ID_EX (

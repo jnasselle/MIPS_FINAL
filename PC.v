@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date:    15:41:34 03/04/2015 
+// Create Date:    09:28:04 06/02/2015 
 // Design Name: 
-// Module Name:    Sumador 
+// Module Name:    PC 
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -18,14 +18,20 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module Sumador( 
-	input [31:0] op1,
-	input [31:0] op2,
-	output reg [31:0] result
+module PC(
+	input clk,
+	input en,
+	input [31:0] PCIn,
+	output reg [31:0] PCOut
     );
-	always@(*)
+	always @(posedge clk)
 	begin
-	result=op1+op2;
+		if(en == 1'b1)
+		begin
+		PCOut <= PCIn;
+		end
+		
 	end
+
 
 endmodule
