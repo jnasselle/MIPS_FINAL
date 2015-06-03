@@ -19,13 +19,13 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module HazardUnit(
-	input [5:0] RsD,
-	input [5:0] RtD,
-	input [5:0] RsE,
-	input [5:0] RtE,
-	input [5:0] WriteRegE,
-	input [5:0] WriteRegM,
-	input [5:0] WriteRegW,
+	input [4:0] RsD,
+	input [4:0] RtD,
+	input [4:0] RsE,
+	input [4:0] RtE,
+	input [4:0] WriteRegE,
+	input [4:0] WriteRegM,
+	input [4:0] WriteRegW,
 	input RegWriteE,
 	input RegWriteM,
 	input RegWriteW,

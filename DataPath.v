@@ -67,7 +67,7 @@ wire ID_Stall;
 wire EX_RegWrite;	//Se debe escribir un registro?
 wire EX_MemtoReg;	//Existe writeback?
 wire EX_MemWrite;	//Se graba la memoria de dato? 
-wire [6:0] EX_ALUControl;	//Control de la ALU
+wire [5:0] EX_ALUControl;	//Control de la ALU
 wire EX_ALUSrc;	//El operando de la ALU es un reg o un imm?
 wire EX_RegDest;	//El registro destino es rd o rt?
 wire [31:0] EX_ALUOut;	//Salida de la ALU

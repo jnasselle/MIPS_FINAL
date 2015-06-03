@@ -19,7 +19,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module ALU(
-	input [3:0] ALUCon,
+	input [5:0] ALUCon,
 	input [31:0] A, //rs
 	input [31:0] B, //rt o shamt
 	output [31:0] ALUOut
