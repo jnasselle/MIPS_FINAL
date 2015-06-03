@@ -38,6 +38,7 @@ module Mux4
 			2'b01:	out <= in1;
 			2'b10:	out <= in2;
 			2'b10:	out <= in3;
+			default: out <= in0;
 		endcase
 	end
 endmodule

@@ -92,6 +92,7 @@ wire EX_Flush;
 wire MEM_RegWrite;	//Se debe escribir un registro?
 wire MEM_MemtoReg;	//Existe writeback?
 wire MEM_MemWrite;	//Se graba la memoria de datos?
+wire MEM_MemWrite4;
 wire [31:0] MEM_ALUOut;
 wire [31:0] MEM_WriteData;
 wire [4:0] MEM_WriteReg;
@@ -284,7 +285,7 @@ ID_EX DataPath_ID_EX (
 
 Mux3 EX_Mux3_RegDst (
     .in0(EX_Rt), 
-    .in1(EX_Rs), 
+    .in1(EX_Rd), 
     .out(EX_WriteReg), 
     .sel(EX_RegDest)
     );
@@ -345,7 +346,10 @@ EX_MEM DataPath_EX_MEM (
     .WriteRegOut(MEM_WriteReg) //Direccion de Registro
     );
 
-
+de1a4 MEM_de1a4 (
+    .in(MEM_MemWrite), 
+    .out(MEM_MemWrite4)
+    );
 
 MemDatos IF_MemDatos (
   .clka(clk), // input clka

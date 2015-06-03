@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date:    13:39:11 06/01/2015 
+// Create Date:    11:02:21 06/03/2015 
 // Design Name: 
-// Module Name:    Mux3 
+// Module Name:    de1a4 
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -18,19 +18,18 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module Mux3(
-    input  [4:0] in0,
-    input  [4:0] in1,
-    output reg [4:0] out,
-    input sel
+module de1a4(
+    input in,
+    output reg [3:0]out
     );
 
-	always @(*)
-	begin
-		case (sel)
-			1'b0: 	out <= in0;
-			1'b1:		out <= in1;
-			default: out <= in1;
-		endcase
-	end
+always@(*)
+begin
+	out[0]<=in;
+	out[1]<=in;
+	out[2]<=in;
+	out[3]<=in;
+end
+
+
 endmodule
