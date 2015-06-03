@@ -25,11 +25,11 @@ module MEM_WB(
 	input [4:0] WriteRegIn,
 	input	RegWriteIn,
 	input MemtoRegIn,
-	output reg [31:0] MemDataOut=0,
-	output reg [31:0] ALUDataOut=0,
-	output reg [4:0] WriteRegOut=0,
-	output reg	RegWriteOut=0,
-	output reg MemtoRegOut=0
+	output reg [31:0] MemDataOut,
+	output reg [31:0] ALUDataOut,
+	output reg [4:0] WriteRegOut,
+	output reg	RegWriteOut,
+	output reg MemtoRegOut
     );
 
 always@(*)

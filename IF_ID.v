@@ -24,8 +24,8 @@ module IF_ID(
 	input enable,
 	input [31:0] instruccionIn,
 	input [31:0] PC4In,	//PC+4
-	output reg [31:0] instruccionOut=0,
-	output reg [31:0] PC4Out=0
+	output reg [31:0] instruccionOut,
+	output reg [31:0] PC4Out
     );
 
 always@ (*)	//Latch - Falta Clear y Enable
