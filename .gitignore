@@ -6,3 +6,5 @@
 #!.gitignore
 #!/ipcore_dir/
 #!/ipcore_dir/*.xco
+ipcore_dir/MemInstrucciones.xco
+ipcore_dir/MemInstrucciones.v
