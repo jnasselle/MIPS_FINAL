@@ -31,19 +31,25 @@ module IF_ID(
 
 always@ (*)	//Latch - Falta Clear y Enable
 begin
-	if (le && enable)
+	if (reset == 1)
 		begin
-		if(reset == 1)
+		instruccionOut<=0;	//Ver si es cero 0 y si no hay que borrar PC4In
+		PC4Out<=0;
+		end
+	else if (enable && le)
+		begin
+		if(clear)
 			begin
-			instruccionOut<=0;	//Ver si es cero 0 y si no hay que borrar PC4In
-			PC4Out<=0;
-			end 
+			instruccionOut<=0;
+			PC4Out<= PC4In;
+			end
 		else
 			begin
 			instruccionOut<=instruccionIn;
 			PC4Out<= PC4In;
 			end
-	end
+		
+		end 
 end
 
 
