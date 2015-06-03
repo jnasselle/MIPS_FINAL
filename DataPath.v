@@ -118,8 +118,8 @@ Sumador IF_Sumador (
 
 
 Mux2 IF_Mux2 (
-    .in0(ID_PCBranch), 	//Direccion de Jump
-    .in1(IF_PC_Out4), //Salida del sumador
+	 .in0(IF_PC_Out4), //Salida del sumador
+    .in1(ID_PCBranch), 	//Direccion de Jump
     .out(IF_PC_In), //Va al PC
     .sel(ID_PCSrc)
     );
@@ -169,7 +169,7 @@ Registros ID_Registros (
 
 
 Mux2 ID_Mux2_RD1 (
-    .in0(ID_RD2), 
+    .in0(ID_RD1), 
     .in1(EX_ALUOut),
     .out(ID_Mux2_RD1_Out),
     .sel(ID_ForwardA)
