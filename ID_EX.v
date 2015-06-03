@@ -33,18 +33,18 @@ module ID_EX(
 	input	MemtoRegIn,
 	input	MemWriteIn,
 	input	RegDstIn,
-	output reg [31:0] RegData1Out,
-	output reg [31:0] RegData2Out,
-	output reg [31:0] ExtendidoOut,
-	output reg [4:0] rsOut,
-	output reg [4:0] rtOut,
-	output reg [4:0] rdOut,	
-	output reg	[5:0] ALUControlOut,
-	output reg	ALUSrcOut,
-	output reg	RegWriteOut,
-	output reg	MemtoRegOut,
-	output reg	MemWriteOut,
-	output reg	RegDstOut
+	output reg [31:0] RegData1Out=0,
+	output reg [31:0] RegData2Out=0,
+	output reg [31:0] ExtendidoOut=0,
+	output reg [4:0] rsOut=0,
+	output reg [4:0] rtOut=0,
+	output reg [4:0] rdOut=0,	
+	output reg	[5:0] ALUControlOut=0,
+	output reg	ALUSrcOut=0,
+	output reg	RegWriteOut=0,
+	output reg	MemtoRegOut=0,
+	output reg	MemWriteOut=0,
+	output reg	RegDstOut=0
     );
 
 always@(*)
