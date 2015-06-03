@@ -20,6 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 module MEM_WB(
 	input le,
+	input reset,
 	input [31:0] MemDataIn,
 	input	[31:0] ALUDataIn,
 	input [4:0] WriteRegIn,
@@ -34,14 +35,22 @@ module MEM_WB(
 
 always@(*)
 begin
-	if (le == 1'b1)
-	begin
-	MemDataOut<=MemDataIn;
-	ALUDataOut<=ALUDataIn;
-	WriteRegOut<=WriteRegIn;
-	RegWriteOut<=RegWriteIn;
-	MemtoRegOut<=MemtoRegIn;
-	end
+	if(reset == 1)
+		begin
+		MemDataOut<=0;
+		ALUDataOut<=0;
+		WriteRegOut<=0;
+		RegWriteOut<=0;
+		MemtoRegOut<=0;
+		end
+	else if (le == 1'b1)
+		begin
+		MemDataOut<=MemDataIn;
+		ALUDataOut<=ALUDataIn;
+		WriteRegOut<=WriteRegIn;
+		RegWriteOut<=RegWriteIn;
+		MemtoRegOut<=MemtoRegIn;
+		end
 end
 
 

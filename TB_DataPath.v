@@ -4,7 +4,7 @@
 // Company: 
 // Engineer:
 //
-// Create Date:   11:49:21 06/03/2015
+// Create Date:   13:23:12 06/03/2015
 // Design Name:   DataPath
 // Module Name:   D:/Ultrabook/Documents/Facultad/Trabajo Arquitectura/MIPS_FINAL/TB_DataPath.v
 // Project Name:  MIPS_FINAL
@@ -27,6 +27,7 @@ module TB_DataPath;
 	// Inputs
 	reg clk;
 	reg rx;
+	reg reset;
 
 	// Outputs
 	wire tx;
@@ -35,6 +36,7 @@ module TB_DataPath;
 	DataPath uut (
 		.clk(clk), 
 		.rx(rx), 
+		.reset(reset), 
 		.tx(tx)
 	);
 
@@ -42,9 +44,17 @@ module TB_DataPath;
 		// Initialize Inputs
 		clk = 0;
 		rx = 0;
+		reset = 0;
 
 		// Wait 100 ns for global reset to finish
 		#10;
+		reset=1;
+		clk=1;
+		#10;
+		reset=1;
+		clk=0;
+		#10;
+		reset=0;
 		clk=1;
 		#10;
 		clk=0;
@@ -90,12 +100,12 @@ module TB_DataPath;
 		clk=0;
 		#10;
 		clk=1;
-		#10;
-		clk=0;
+		
         
 		// Add stimulus here
 
 	end
+	
       
 endmodule
 

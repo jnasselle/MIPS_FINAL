@@ -30,10 +30,12 @@ module PC(
 		if(reset)
 			PCOut<=0;
 		else
-			case(en)
-				1'b0: PCOut <= PCIn;
-				default: PCOut <= PCOut;
-	
+			begin
+				case(en)
+					1'b0: PCOut <= PCIn;
+					default: PCOut <= PCOut;
+				endcase
+			end
 		
 	end
 

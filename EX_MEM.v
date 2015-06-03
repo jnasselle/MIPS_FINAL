@@ -20,6 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 module EX_MEM(
 	input le,
+	input reset,
 	input RegWriteIn,
 	input MemtoRegIn,
 	input MemWriteIn,
@@ -36,15 +37,24 @@ module EX_MEM(
 
 always@(*)
 begin
-	if (le == 1'b1)
-	begin
-	ALUResultOut	<=ALUResultIn;
-	WriteRegOut		<=WriteRegIn;
-	WriteDataOut	<=WriteDataIn;
-	RegWriteOut		<=RegWriteIn;
-	MemtoRegOut		<=MemtoRegIn;
-	MemWriteOut		<=MemWriteIn;
-	end
+	if (reset == 1)
+		begin
+		ALUResultOut	<=0;
+		WriteRegOut		<=0;
+		WriteDataOut	<=0;
+		RegWriteOut		<=0;
+		MemtoRegOut		<=0;
+		MemWriteOut		<=0;
+		end
+	else if (le == 1'b1)
+		begin
+		ALUResultOut	<=ALUResultIn;
+		WriteRegOut		<=WriteRegIn;
+		WriteDataOut	<=WriteDataIn;
+		RegWriteOut		<=RegWriteIn;
+		MemtoRegOut		<=MemtoRegIn;
+		MemWriteOut		<=MemWriteIn;
+		end
 end
 
 endmodule

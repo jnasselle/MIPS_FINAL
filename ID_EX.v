@@ -20,6 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 module ID_EX(
 	input le,
+	input reset,
 	input clear,	//Falta Implementar esto
 	input [31:0] RegData1In,
 	input [31:0] RegData2In,
@@ -49,21 +50,36 @@ module ID_EX(
 
 always@(*)
 begin
-	if (le == 1'b1)
-	begin
-	RegData1Out<=RegData1In;
-	RegData2Out<=RegData2In;
-	ExtendidoOut<=ExtendidoIn;
-	rsOut<=rsIn;
-	rtOut<=rtIn;
-	rdOut<=rdIn;
-	ALUControlOut<=ALUControlIn;
-	ALUSrcOut<=ALUSrcIn;
-	RegWriteOut<=RegWriteIn;
-	MemtoRegOut<=MemtoRegIn;
-	MemWriteOut<=MemWriteIn;
-	RegDstOut<=RegDstIn;
-	end
+	if (reset || clear) //ver bien esto
+		begin
+		RegData1Out<=0;
+		RegData2Out<=0;
+		ExtendidoOut<=0;
+		rsOut<=0;
+		rtOut<=0;
+		rdOut<=0;
+		ALUControlOut<=0;
+		ALUSrcOut<=0;
+		RegWriteOut<=0;
+		MemtoRegOut<=0;
+		MemWriteOut<=0;
+		RegDstOut<=0;
+		end 
+	else if (le == 1'b1)
+		begin
+		RegData1Out<=RegData1In;
+		RegData2Out<=RegData2In;
+		ExtendidoOut<=ExtendidoIn;
+		rsOut<=rsIn;
+		rtOut<=rtIn;
+		rdOut<=rdIn;
+		ALUControlOut<=ALUControlIn;
+		ALUSrcOut<=ALUSrcIn;
+		RegWriteOut<=RegWriteIn;
+		MemtoRegOut<=MemtoRegIn;
+		MemWriteOut<=MemWriteIn;
+		RegDstOut<=RegDstIn;
+		end
 end
 
 
