@@ -100,6 +100,8 @@ registros[31]
 			registros [29] = 0;
 			registros [30] = 0;
 			registros [31] = 0;
+			RD1Out<=0;
+			RD2Out<=0;
 			end 
 		else if(WE3)
 			begin

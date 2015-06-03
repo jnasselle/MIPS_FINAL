@@ -385,9 +385,9 @@ MEM_WB DataPath_MEM_WB (
     );
 
 
-Mux2 WB_Mux2_MemToReg (
-    .in0(WB_ReadData), 
-    .in1(WB_ALUOut), 
+Mux2 WB_Mux2_MemToReg ( 
+    .in0(WB_ALUOut), 
+	 .in1(WB_ReadData),
     .out(WB_Result), 
     .sel(WB_MemToReg)
     );
