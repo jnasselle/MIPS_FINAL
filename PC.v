@@ -27,9 +27,13 @@ module PC(
 	always @(posedge clk)
 	begin
 		if(en == 1'b1)
-		begin
-		PCOut <= PCIn;
-		end
+			begin
+			PCOut <= PCIn;
+			end
+		else
+			begin
+			PCOut <= PCOut;
+			end
 		
 	end
 

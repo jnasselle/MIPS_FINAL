@@ -256,7 +256,17 @@ case(Op)
 			RegDst=1;//
 			RegWrite=1;
 			Branch=0;
-		end  
+		end
+	default:
+		begin
+			ALUControl= 6'b000000;	
+			MemtoReg=0;//
+			MemWrite=0;
+			ALUSrc=0;
+			RegDst=0;//
+			RegWrite=0;
+			Branch=0;
+		end
 endcase	
 end		
 		

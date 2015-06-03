@@ -81,6 +81,7 @@ module ALU(
 			SLLV:	ALURes <= A<<B[4:0];
 			SRAV:	ALURes <= A>>>B[4:0];
 			SRLV:	ALURes <= A>>B[4:0];
+			default: ALURes <=0;
 		endcase
 	end
 	

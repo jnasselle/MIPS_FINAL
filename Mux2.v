@@ -34,6 +34,7 @@ module Mux2
 		case (sel)
 			1'b0: 	out <= in0;
 			1'b1:		out <= in1;
+			default: out <= in0;
 		endcase
 	end
 endmodule
