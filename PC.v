@@ -22,7 +22,7 @@ module PC(
 	input clk,
 	input en,
 	input [31:0] PCIn,
-	output reg [31:0] PCOut
+	output reg [31:0] PCOut = 0
     );
 	always @(posedge clk)
 	begin
