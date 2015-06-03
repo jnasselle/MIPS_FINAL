@@ -21,19 +21,19 @@
 module PC(
 	input clk,
 	input en,
+	input reset,
 	input [31:0] PCIn,
-	output reg [31:0] PCOut = 0
+	output reg [31:0] PCOut
     );
 	always @(posedge clk)
 	begin
-		if(en == 0'b1)
-			begin
-			PCOut <= PCIn;
-			end
+		if(reset)
+			PCOut<=0;
 		else
-			begin
-			PCOut <= PCOut;
-			end
+			case(en)
+				1'b0: PCOut <= PCIn;
+				default: PCOut <= PCOut;
+	
 		
 	end
 
