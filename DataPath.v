@@ -93,7 +93,7 @@ wire EX_Flush;
 wire MEM_RegWrite;	//Se debe escribir un registro?
 wire MEM_MemtoReg;	//Existe writeback?
 wire MEM_MemWrite;	//Se graba la memoria de datos?
-wire MEM_MemWrite4;
+wire [3:0] MEM_MemWrite4;
 wire [31:0] MEM_ALUOut;
 wire [31:0] MEM_WriteData;
 wire [4:0] MEM_WriteReg;
@@ -358,7 +358,7 @@ de1a4 MEM_de1a4 (
 
 MemDatos IF_MemDatos (
   .clka(clk), // input clka
-  .wea(MEM_MemWrite), // input [3 : 0] wea
+  .wea(MEM_MemWrite4), // input [3 : 0] wea
   .addra(MEM_ALUOut), // input [31 : 0] addra
   .dina(MEM_WriteData), // input [31 : 0] dina
   .douta(MEM_RD) // output [31 : 0] douta
