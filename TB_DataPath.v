@@ -48,13 +48,12 @@ module TB_DataPath;
 
 		// Wait 100 ns for global reset to finish
 		
-		reset=0;
+		reset=1;
 		clk=0;
 		#10;
-		reset=1;
 		clk=1;
 		#10;
-
+		reset=0;
 		clk=0;
 		#10;
 		clk=1;

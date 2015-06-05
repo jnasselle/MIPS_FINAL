@@ -31,7 +31,7 @@ module IF_ID(
 
 always@ (*)	//Latch - Falta Clear y Enable
 begin
-	if (!reset)
+	if (reset == 1)
 		begin
 		instruccionOut<=0;	//Ver si es cero 0 y si no hay que borrar PC4In
 		PC4Out<=0;

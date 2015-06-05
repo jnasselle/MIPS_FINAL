@@ -68,7 +68,7 @@ registros[31]
 */
 	always@(posedge clk)
 	begin
-		if (!reset)
+		if (reset)
 			begin
 			registros [0] <= 0;
 			registros [1] <= 0;
