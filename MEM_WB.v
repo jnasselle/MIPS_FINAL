@@ -43,7 +43,7 @@ begin
 		RegWriteOut<=0;
 		MemtoRegOut<=0;
 		end
-	else if (le == 1'b1)
+	else if (le)
 		begin
 		MemDataOut<=MemDataIn;
 		ALUDataOut<=ALUDataIn;

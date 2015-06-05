@@ -36,7 +36,7 @@ begin
 		instruccionOut<=0;	//Ver si es cero 0 y si no hay que borrar PC4In
 		PC4Out<=0;
 		end
-	else if (le)
+	else if (!le)
 		begin
 		if(clear == 1)
 			begin

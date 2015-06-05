@@ -46,7 +46,7 @@ begin
 		MemtoRegOut		<=0;
 		MemWriteOut		<=0;
 		end
-	else if (le == 1'b1)
+	else if (!le)
 		begin
 		ALUResultOut	<=ALUResultIn;
 		WriteRegOut		<=WriteRegIn;

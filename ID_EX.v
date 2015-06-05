@@ -65,7 +65,7 @@ begin
 		MemWriteOut<=0;
 		RegDstOut<=0;
 		end 
-	else if (le == 1'b1)
+	else if (le)
 		begin
 		RegData1Out<=RegData1In;
 		RegData2Out<=RegData2In;
