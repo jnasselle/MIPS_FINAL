@@ -163,7 +163,7 @@ Registros ID_Registros (
     .reset(reset), 
     .A1In(ID_Instruccion[25:21]), 
     .A2In(ID_Instruccion[20:16]), 
-    .A3In(ID_Instruccion[15:11]), 
+    .A3In(WB_WriteReg), 
     .WD3In(WB_Result),
     .WE3(WB_RegWrite),
     .RD1Out(ID_RD1), 
