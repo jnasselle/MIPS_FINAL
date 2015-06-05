@@ -27,7 +27,7 @@ module PC(
     );
 	always @(posedge clk)
 	begin
-		if(reset)
+		if(!reset)
 			PCOut<=0;
 		else
 			begin

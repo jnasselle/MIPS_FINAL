@@ -37,7 +37,7 @@ module EX_MEM(
 
 always@(*)
 begin
-	if (reset == 1)
+	if (!reset)
 		begin
 		ALUResultOut	<=0;
 		WriteRegOut		<=0;

@@ -50,7 +50,7 @@ module ID_EX(
 
 always@(*)
 begin
-	if (reset || clear) //ver bien esto
+	if (!reset || clear) //ver bien esto
 		begin
 		RegData1Out<=0;
 		RegData2Out<=0;

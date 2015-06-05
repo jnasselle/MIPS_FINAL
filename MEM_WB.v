@@ -35,7 +35,7 @@ module MEM_WB(
 
 always@(*)
 begin
-	if(reset == 1)
+	if(!reset)
 		begin
 		MemDataOut<=0;
 		ALUDataOut<=0;
