@@ -45,7 +45,7 @@ begin
 	 WriteDataOut<=0;
 	 end
 
-always@(*)
+always@(reset,le,WriteRegIn,WriteDataIn,RegWriteIn,MemtoRegIn,MemWriteIn)
 begin
 	if (reset == 1)
 		begin
