@@ -19,16 +19,14 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module ControlUnit(
-	input [5:0] Op,
-	input [5:0] Funct, //Es necesario que pase por este modulo?
-//	input zero,
-	output reg MemtoReg,
-	output reg MemWrite,
-//	output pcscr,			para la AND
-	output reg ALUSrc,
-	output reg RegDst,
-	output reg RegWrite,
-	output reg Branch,
+	input [5:0] Op,		//Define el Tipo de Instruccion: R,I,J
+	input [5:0] Funct,	//Tipo de operacion en las Type-R
+	output reg MemtoReg,	//1:Para Load	,0: Resto
+	output reg MemWrite,	//1:Para Store	,0: Resto
+	output reg ALUSrc,	//1:El operando es un Imm, 0: El operando es un registro
+	output reg RegDst,	//1:El WB es sobre Rt(Load y Op Imm), 0: El WB es sobre Rd (Op R)
+	output reg RegWrite,	//1:Resto ,0: Store
+	output reg Branch,	//1:Branches, 0: Resto
 	output reg [5:0] ALUControl //salida en caso de ser necesario.
    );
 	
@@ -193,7 +191,7 @@ case(Op)
 			MemtoReg=0;//
 			MemWrite=0;
 			ALUSrc=1;
-			RegDst=1;//
+			RegDst=0;//
 			RegWrite=1;
 			Branch=0;
 		end 
@@ -203,7 +201,7 @@ case(Op)
 			MemtoReg=0;//
 			MemWrite=1;
 			ALUSrc=1;
-			RegDst=0;//
+			RegDst=0;// es intistinto ya que no se activa RegWrite
 			RegWrite=0;
 			Branch=0;
 		end 
@@ -244,7 +242,7 @@ case(Op)
 			MemWrite=1;
 			ALUSrc=1;
 			RegDst=0;//
-			RegWrite=1;
+			RegWrite=0; 
 			Branch=0;
 		end
 	XORI:
