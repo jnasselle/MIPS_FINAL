@@ -25,6 +25,9 @@ module PC(
 	input [31:0] PCIn,
 	output reg [31:0] PCOut
     );
+
+initial
+PCOut<=0;
 	always @(posedge clk)
 	begin
 		if(reset)

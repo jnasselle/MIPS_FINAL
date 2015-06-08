@@ -35,6 +35,16 @@ module EX_MEM(
 	output reg [31:0] WriteDataOut
     );
 
+initial
+begin
+	RegWriteOut<=0;
+	 MemtoRegOut<=0;
+	 MemWriteOut<=0;
+	 ALUResultOut<=0;
+	 WriteRegOut<=0;		
+	 WriteDataOut<=0;
+	 end
+
 always@(*)
 begin
 	if (reset == 1)

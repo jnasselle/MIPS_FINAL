@@ -29,6 +29,14 @@ module IF_ID(
 	output reg [31:0] PC4Out
     );
 
+initial
+begin
+instruccionOut<=0;
+PC4Out<=0;
+end
+
+
+
 always@ (*)	//Latch - Falta Clear y Enable
 begin
 	if (reset == 1)

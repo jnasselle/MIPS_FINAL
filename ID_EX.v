@@ -47,6 +47,22 @@ module ID_EX(
 	output reg	MemWriteOut,
 	output reg	RegDstOut
     );
+	 
+	 initial
+	 begin
+			RegData1Out<=0;
+			RegData2Out<=0;
+			ExtendidoOut<=0;
+			rsOut<=0;
+			rtOut<=0;
+			rdOut<=0;	
+			ALUControlOut<=0;
+			ALUSrcOut<=0;
+			RegWriteOut<=0;
+			MemtoRegOut<=0;
+			MemWriteOut<=0;
+			RegDstOut<=0;
+	 end
 
 always@(*)
 begin

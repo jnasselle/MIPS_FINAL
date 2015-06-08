@@ -33,6 +33,15 @@ module MEM_WB(
 	output reg MemtoRegOut
     );
 
+initial
+begin
+MemDataOut<=0;
+ALUDataOut<=0;
+WriteRegOut<=0;
+RegWriteOut<=0;
+MemtoRegOut<=0;
+end
+
 always@(*)
 begin
 	if(reset == 1)
