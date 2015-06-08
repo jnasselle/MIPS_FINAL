@@ -48,64 +48,13 @@ module TB_DataPath;
 
 		// Wait 100 ns for global reset to finish
 		
-		reset=1;
-		clk=0;
-		#10;
-		clk=1;
-		#10;
-		reset=0;
-		clk=0;
-		#10;
-		clk=1;
-		#10;
-		clk=0;
-		#10;
-		clk=1;
-		#10;
-		clk=0;
-		#10;
-		clk=1;
-		#10;
-		clk=0;
-		#10;
-		clk=1;
-		#10;
-		clk=0;
-		#10;
-		clk=1;
-		#10;
-		clk=0;
-		#10;
-		clk=1;
-		#10;
-		clk=0;
-		#10;
-		clk=1;
-		#10;
-		clk=0;
-		#10;
-		clk=1;
-		#10;
-		clk=0;
-		#10;
-		clk=1;
-		#10;
-		clk=0;
-		#10;
-		clk=1;
-		#10;
-		clk=0;
-		#10;
-		clk=1;
-		#10;
-		clk=0;
-		#10;
-		clk=1;
 		
         
 		// Add stimulus here
 
 	end
+	always	
+	#10 clk=~clk;
 	
       
 endmodule
