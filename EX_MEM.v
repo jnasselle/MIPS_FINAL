@@ -19,7 +19,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module EX_MEM(
-	input le,
+	input clk,
 	input reset,
 	input RegWriteIn,
 	input MemtoRegIn,
@@ -38,33 +38,21 @@ module EX_MEM(
 initial
 begin
 	RegWriteOut<=0;
-	 MemtoRegOut<=0;
-	 MemWriteOut<=0;
-	 ALUResultOut<=0;
-	 WriteRegOut<=0;		
-	 WriteDataOut<=0;
-	 end
+	MemtoRegOut<=0;
+	MemWriteOut<=0;
+	ALUResultOut<=0;
+	WriteRegOut<=0;		
+	WriteDataOut<=0;
+end
 
-always@(reset,le,WriteRegIn,WriteDataIn,RegWriteIn,MemtoRegIn,MemWriteIn)
+always@(posedge clk)
 begin
-	if (reset == 1)
-		begin
-		ALUResultOut	<=0;
-		WriteRegOut		<=0;
-		WriteDataOut	<=0;
-		RegWriteOut		<=0;
-		MemtoRegOut		<=0;
-		MemWriteOut		<=0;
-		end
-	else if (!le)
-		begin
-		ALUResultOut	<=ALUResultIn;
-		WriteRegOut		<=WriteRegIn;
-		WriteDataOut	<=WriteDataIn;
-		RegWriteOut		<=RegWriteIn;
-		MemtoRegOut		<=MemtoRegIn;
-		MemWriteOut		<=MemWriteIn;
-		end
+	ALUResultOut	<=ALUResultIn;
+	WriteRegOut		<=WriteRegIn;
+	WriteDataOut	<=WriteDataIn;
+	RegWriteOut		<=RegWriteIn;
+	MemtoRegOut		<=MemtoRegIn;
+	MemWriteOut		<=MemWriteIn;
 end
 
 endmodule

@@ -104,7 +104,7 @@ registros [0] <= 0;
 			RD1Out<= 0;
 			RD2Out<= 0;
 end
-	always@(posedge clk)
+	always@(negedge clk)
 	begin
 		if (reset)
 			begin

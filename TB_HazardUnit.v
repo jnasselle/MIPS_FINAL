@@ -4,10 +4,10 @@
 // Company: 
 // Engineer:
 //
-// Create Date:   10:01:16 06/01/2015
+// Create Date:   13:43:32 06/10/2015
 // Design Name:   HazardUnit
-// Module Name:   D:/Ultrabook/Documents/Facultad/Trabajo Arquitectura/MIPS_FINAL/TB_HazardUnit.v
-// Project Name:  MIPS_FINAL
+// Module Name:   /home/jnasselle/Facu/Arquitectura_de_Computadoras/FINAL/TB_HazardUnit.v
+// Project Name:  FINAL
 // Target Device:  
 // Tool versions:  
 // Description: 
@@ -25,13 +25,13 @@
 module TB_HazardUnit;
 
 	// Inputs
-	reg [5:0] RsD;
-	reg [5:0] RtD;
-	reg [5:0] RsE;
-	reg [5:0] RtE;
-	reg [5:0] WriteRegE;
-	reg [5:0] WriteRegM;
-	reg [5:0] WriteRegW;
+	reg [4:0] RsD;
+	reg [4:0] RtD;
+	reg [4:0] RsE;
+	reg [4:0] RtE;
+	reg [4:0] WriteRegE;
+	reg [4:0] WriteRegM;
+	reg [4:0] WriteRegW;
 	reg RegWriteE;
 	reg RegWriteM;
 	reg RegWriteW;
@@ -92,6 +92,15 @@ module TB_HazardUnit;
 		#100;
         
 		// Add stimulus here
+		#10
+		RtE=2;
+		WriteRegM=2;
+		RegWriteM=1;
+		RsE=1;
+		WriteRegW=1;
+		RegWriteW=1;
+		
+		
 
 	end
       

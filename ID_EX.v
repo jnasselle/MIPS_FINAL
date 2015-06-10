@@ -19,7 +19,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module ID_EX(
-	input le,
+	input clk,
 	input reset,
 	input clear,	//Falta Implementar esto
 	input [31:0] RegData1In,
@@ -64,38 +64,20 @@ module ID_EX(
 			RegDstOut<=0;
 	 end
 
-always@(*)
+always@(posedge clk)
 begin
-	if (reset || clear) //ver bien esto
-		begin
-		RegData1Out<=0;
-		RegData2Out<=0;
-		ExtendidoOut<=0;
-		rsOut<=0;
-		rtOut<=0;
-		rdOut<=0;
-		ALUControlOut<=0;
-		ALUSrcOut<=0;
-		RegWriteOut<=0;
-		MemtoRegOut<=0;
-		MemWriteOut<=0;
-		RegDstOut<=0;
-		end 
-	else if (le)
-		begin
-		RegData1Out<=RegData1In;
-		RegData2Out<=RegData2In;
-		ExtendidoOut<=ExtendidoIn;
-		rsOut<=rsIn;
-		rtOut<=rtIn;
-		rdOut<=rdIn;
-		ALUControlOut<=ALUControlIn;
-		ALUSrcOut<=ALUSrcIn;
-		RegWriteOut<=RegWriteIn;
-		MemtoRegOut<=MemtoRegIn;
-		MemWriteOut<=MemWriteIn;
-		RegDstOut<=RegDstIn;
-		end
+	RegData1Out<=RegData1In;
+	RegData2Out<=RegData2In;
+	ExtendidoOut<=ExtendidoIn;
+	rsOut<=rsIn;
+	rtOut<=rtIn;
+	rdOut<=rdIn;
+	ALUControlOut<=ALUControlIn;
+	ALUSrcOut<=ALUSrcIn;
+	RegWriteOut<=RegWriteIn;
+	MemtoRegOut<=MemtoRegIn;
+	MemWriteOut<=MemWriteIn;
+	RegDstOut<=RegDstIn;
 end
 
 

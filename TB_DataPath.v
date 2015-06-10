@@ -4,10 +4,10 @@
 // Company: 
 // Engineer:
 //
-// Create Date:   13:23:12 06/03/2015
+// Create Date:   16:22:22 06/10/2015
 // Design Name:   DataPath
-// Module Name:   D:/Ultrabook/Documents/Facultad/Trabajo Arquitectura/MIPS_FINAL/TB_DataPath.v
-// Project Name:  MIPS_FINAL
+// Module Name:   /home/jnasselle/Facu/Arquitectura_de_Computadoras/FINAL/TB_DataPath.v
+// Project Name:  FINAL
 // Target Device:  
 // Tool versions:  
 // Description: 
@@ -45,210 +45,64 @@ module TB_DataPath;
 		clk = 0;
 		rx = 0;
 		reset = 0;
-
-		// Wait 100 ns for global reset to finish
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		#10
-		clk=~clk;
-		
-		
-		
         
 		// Add stimulus here
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		#10 clk=~clk;
+		
 
 	end
 
-      
 endmodule
 

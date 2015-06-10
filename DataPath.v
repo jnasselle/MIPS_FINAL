@@ -147,7 +147,7 @@ PC IF_PC_Module (
     );
 
 IF_ID DataPath_IF_ID(
-	.le(clk),
+	.clk(clk),
 	.reset(reset),
 	.clear(ID_Stall),
 	.enable(ID_PCSrc),
@@ -256,7 +256,7 @@ HazardUnit DataPath_HazardUnit (
 	 
 //////////////////////////////////ID_EX////////////////////////////////////////////	 
 ID_EX DataPath_ID_EX (
-    .le(clk),
+    .clk(clk),
 	 .reset(reset),
 	 .clear(EX_Flush),
     .RegData1In(ID_RD1), 
@@ -334,7 +334,7 @@ ALU EX_ALU (
 
 EX_MEM DataPath_EX_MEM (
 	  //Inputs
-    .le(clk),
+    .clk(clk),
 	 .reset(reset),
     .RegWriteIn(EX_RegWrite), //Control
     .MemtoRegIn(EX_MemtoReg), //Control
@@ -369,7 +369,7 @@ MemDatos IF_MemDatos (
 */
 
 MEM_WB DataPath_MEM_WB (
-    .le(clk), 
+    .clk(clk), 
 	 .reset(reset),
     .MemDataIn(MEM_RD), 
     .ALUDataIn(MEM_ALUOut), 

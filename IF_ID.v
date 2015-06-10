@@ -19,7 +19,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module IF_ID(
-	input le,
+	input clk,
 	input reset,
 	input clear,
 	input enable,
@@ -37,27 +37,10 @@ end
 
 
 
-always@ (*)	//Latch - Falta Clear y Enable
+always@ (posedge clk)	//Latch - Falta Clear y Enable
 begin
-	if (reset == 1)
-		begin
-		instruccionOut<=0;	//Ver si es cero 0 y si no hay que borrar PC4In
-		PC4Out<=0;
-		end
-	else if (!le)
-		begin
-		if(clear == 1)
-			begin
-			instruccionOut<=0;
-			PC4Out<= PC4In;
-			end
-		else
-			begin
 			instruccionOut<=instruccionIn;
 			PC4Out<= PC4In;
-			end
-		
-		end 
 end
 
 

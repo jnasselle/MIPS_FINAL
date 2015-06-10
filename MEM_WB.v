@@ -19,7 +19,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module MEM_WB(
-	input le,
+	input clk,
 	input reset,
 	input [31:0] MemDataIn,
 	input	[31:0] ALUDataIn,
@@ -42,24 +42,13 @@ RegWriteOut<=0;
 MemtoRegOut<=0;
 end
 
-always@(*)
+always@(posedge clk)
 begin
-	if(reset == 1)
-		begin
-		MemDataOut<=0;
-		ALUDataOut<=0;
-		WriteRegOut<=0;
-		RegWriteOut<=0;
-		MemtoRegOut<=0;
-		end
-	else if (le)
-		begin
 		MemDataOut<=MemDataIn;
 		ALUDataOut<=ALUDataIn;
 		WriteRegOut<=WriteRegIn;
 		RegWriteOut<=RegWriteIn;
 		MemtoRegOut<=MemtoRegIn;
-		end
 end
 
 

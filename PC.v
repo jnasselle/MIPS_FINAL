@@ -23,24 +23,15 @@ module PC(
 	input en,
 	input reset,
 	input [31:0] PCIn,
-	output reg [31:0] PCOut
+	output reg [31:0] PCOut=0
     );
 
-initial
-PCOut<=0;
-	always @(posedge clk)
-	begin
-		if(reset)
-			PCOut<=0;
-		else
-			begin
-				case(en)
-					1'b0: PCOut <= PCIn;
-					default: PCOut <= PCOut;
-				endcase
-			end
-		
-	end
+
+
+
+
+always @(posedge clk)
+PCOut <= PCIn;	
 
 
 endmodule
