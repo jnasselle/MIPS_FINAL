@@ -25,8 +25,8 @@ module Registros( input clk,
 	input [4:0] A3In,	//rd direccion.Para escritura de reg
 	input [31:0] WD3In,	//DATOS
 	input WE3,
-	output reg[31:0] RD1Out,	//Datos almacenados en la dir rs
-	output reg[31:0] RD2Out	//Datos almacenados en la dir rd
+	output [31:0] RD1Out,	//Datos almacenados en la dir rs
+	output [31:0] RD2Out	//Datos almacenados en la dir rd
 	//output [1023:0] Registros
     );
 	reg [31:0] registros[31:0];
@@ -101,8 +101,8 @@ registros [0] <= 0;
 			registros [29] <= 0;
 			registros [30] <= 0;
 			registros [31] <= 0;
-			RD1Out<= 0;
-			RD2Out<= 0;
+			//RD1Out<= 0;
+			//RD2Out<= 0;
 end
 	always@(negedge clk)
 	begin
@@ -140,15 +140,18 @@ end
 			registros [29] <= 0;
 			registros [30] <= 0;
 			registros [31] <= 0;
-			RD1Out<=0;
-			RD2Out<=0;
+			//RD1Out<=0;
+			//RD2Out<=0;
 			end 
 		else if(WE3)
 			begin
 			registros[A3In]<=WD3In;
-			RD1Out<=registros[A1In];
-			RD2Out<=registros[A2In];
+			//RD1Out<=registros[A1In];
+			//RD2Out<=registros[A2In];
 			end
 	end
+	
+	assign RD1Out = registros[A1In];
+	assign RD2Out = registros[A2In];
 	
 endmodule
