@@ -60,6 +60,7 @@ wire [31:0] ID_Mux2_RD1_Out;
 wire [31:0] ID_Mux2_RD2_Out;
 wire ID_PCSrc;
 wire ID_Stall;
+wire ID_Halt;
 
 /*
 	ETAPA DE EXECUTION
@@ -85,6 +86,8 @@ wire [1:0] EX_ForwardB;
 wire [31:0] EX_WriteData;
 wire [31:0] EX_ImmExtendido;
 wire EX_Flush;
+wire EX_Halt;
+
 
 /*
 	ETAPA DE MEMORY
@@ -98,6 +101,8 @@ wire [31:0] MEM_ALUOut;
 wire [31:0] MEM_WriteData;
 wire [4:0] MEM_WriteReg;
 wire [31:0] MEM_RD;
+wire EX_Halt;
+
 
 /*
 	ETAPA DE WRITEBACK
@@ -109,6 +114,8 @@ wire [31:0] WB_ReadData;
 wire [31:0] WB_ALUOut;
 wire [4:0] WB_WriteReg;
 wire [31:0] WB_Result;
+wire WB_Halt;
+
 
 
 Sumador IF_Sumador (
@@ -256,34 +263,36 @@ HazardUnit DataPath_HazardUnit (
 	 
 //////////////////////////////////ID_EX////////////////////////////////////////////	 
 ID_EX DataPath_ID_EX (
-    .clk(clk),
-	 .reset(reset),
-	 .clear(EX_Flush),
-    .RegData1In(ID_RD1), 
-    .RegData2In(ID_RD2), 
-    .ExtendidoIn(ID_ImmExtendido), 
-    .rsIn(ID_Instruccion[25:21]), 
-    .rtIn(ID_Instruccion[20:16]), 
-    .rdIn(ID_Instruccion[15:11]), 
-    .ALUControlIn(ID_ALUControl), 
-    .ALUSrcIn(ID_ALUSrc), 
-    .RegWriteIn(ID_RegWrite), 
-    .MemtoRegIn(ID_MemtoReg), 
-    .MemWriteIn(ID_MemWrite), 
-    .RegDstIn(ID_RegDst), 
-////////////////////////////////////////////////////////////////////////////////////
-    .RegData1Out(EX_RD1), 
-    .RegData2Out(EX_RD2), 
-    .ExtendidoOut(EX_ImmExtendido), 
-    .rsOut(EX_Rs), 
-    .rtOut(EX_Rt), 
-    .rdOut(EX_Rd), 
-    .ALUControlOut(EX_ALUControl), 
-    .ALUSrcOut(EX_ALUSrc), 
-    .RegWriteOut(EX_RegWrite), 
-    .MemtoRegOut(EX_MemtoReg), 
-    .MemWriteOut(EX_MemWrite), 
-    .RegDstOut(EX_RegDest)	 
+	.clk(clk),
+	.reset(reset),
+	.clear(EX_Flush),
+	.RegData1In(ID_RD1), 
+	.RegData2In(ID_RD2), 
+	.ExtendidoIn(ID_ImmExtendido), 
+	.rsIn(ID_Instruccion[25:21]), 
+	.rtIn(ID_Instruccion[20:16]), 
+	.rdIn(ID_Instruccion[15:11]), 
+	.ALUControlIn(ID_ALUControl), 
+	.ALUSrcIn(ID_ALUSrc), 
+	.RegWriteIn(ID_RegWrite), 
+	.MemtoRegIn(ID_MemtoReg), 
+	.MemWriteIn(ID_MemWrite), 
+	.RegDstIn(ID_RegDst), 
+	.HaltIn(ID_Halt),
+	////////////////////////////////////////////////////////////////////////////////////
+	.RegData1Out(EX_RD1), 
+	.RegData2Out(EX_RD2), 
+	.ExtendidoOut(EX_ImmExtendido), 
+	.rsOut(EX_Rs), 
+	.rtOut(EX_Rt), 
+	.rdOut(EX_Rd), 
+	.ALUControlOut(EX_ALUControl), 
+	.ALUSrcOut(EX_ALUSrc), 
+	.RegWriteOut(EX_RegWrite), 
+	.MemtoRegOut(EX_MemtoReg), 
+	.MemWriteOut(EX_MemWrite), 
+	.RegDstOut(EX_RegDest),
+	.HaltOut(EX_Halt)
     );	 
 	 
 
@@ -342,13 +351,15 @@ EX_MEM DataPath_EX_MEM (
     .ALUResultIn(EX_ALUOut),	//Datos
     .WriteRegIn(EX_WriteReg), //Numero de Registro para writeback
     .WriteDataIn(EX_WriteData), //Datos para writeback
+	 .HaltIn(EX_Halt),
 	 //Outputs
     .RegWriteOut(MEM_RegWrite), //Control 
     .MemtoRegOut(MEM_MemtoReg), //Control 
     .MemWriteOut(MEM_MemWrite), //Control 
     .ALUResultOut(MEM_ALUOut), //Datos
     .WriteDataOut(MEM_WriteData),	//DATOS
-    .WriteRegOut(MEM_WriteReg) //Direccion de Registro
+    .WriteRegOut(MEM_WriteReg), //Direccion de Registro
+	 .HaltOut(MEM_Halt)
     );
 
 de1a4 MEM_de1a4 (
@@ -376,12 +387,14 @@ MEM_WB DataPath_MEM_WB (
     .WriteRegIn(MEM_WriteReg), 
     .RegWriteIn(MEM_RegWrite), 
     .MemtoRegIn(MEM_MemtoReg),
+	 .HaltIn(MEM_Halt),
 	//Outputs	 
     .MemDataOut(WB_ReadData), 
     .ALUDataOut(WB_ALUOut), 
     .WriteRegOut(WB_WriteReg), 
     .RegWriteOut(WB_RegWrite), 
-    .MemtoRegOut(WB_MemToReg)
+    .MemtoRegOut(WB_MemToReg),
+	 .HaltOut(WB_Halt)
     );
 
 

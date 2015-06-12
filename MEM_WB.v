@@ -26,29 +26,33 @@ module MEM_WB(
 	input [4:0] WriteRegIn,
 	input	RegWriteIn,
 	input MemtoRegIn,
+	input HaltIn,
 	output reg [31:0] MemDataOut,
 	output reg [31:0] ALUDataOut,
 	output reg [4:0] WriteRegOut,
 	output reg	RegWriteOut,
-	output reg MemtoRegOut
+	output reg MemtoRegOut,
+	output reg HaltOut
+	
     );
 
 initial
 begin
-MemDataOut<=0;
-ALUDataOut<=0;
-WriteRegOut<=0;
-RegWriteOut<=0;
-MemtoRegOut<=0;
+	MemDataOut<=0;
+	ALUDataOut<=0;
+	WriteRegOut<=0;
+	RegWriteOut<=0;
+	MemtoRegOut<=0;
 end
 
 always@(posedge clk)
 begin
-		MemDataOut<=MemDataIn;
-		ALUDataOut<=ALUDataIn;
-		WriteRegOut<=WriteRegIn;
-		RegWriteOut<=RegWriteIn;
-		MemtoRegOut<=MemtoRegIn;
+	MemDataOut<=MemDataIn;
+	ALUDataOut<=ALUDataIn;
+	WriteRegOut<=WriteRegIn;
+	RegWriteOut<=RegWriteIn;
+	MemtoRegOut<=MemtoRegIn;
+	HaltOut<=HaltIn;
 end
 
 

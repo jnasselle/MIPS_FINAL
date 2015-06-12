@@ -27,7 +27,9 @@ module ControlUnit(
 	output reg RegDst,	//1:El WB es sobre Rt(Load y Op Imm), 0: El WB es sobre Rd (Op R)
 	output reg RegWrite,	//1:Resto ,0: Store
 	output reg Branch,	//1:Branches, 0: Resto
-	output reg [5:0] ALUControl //salida en caso de ser necesario.
+	output reg [5:0] ALUControl, //salida en caso de ser necesario.
+	output reg TipoExtension,
+	output reg Halt=0
    );
 	
 localparam TIPOR = 6'b000000;
@@ -50,6 +52,7 @@ localparam SLTI = 6'b001010;
 localparam SLTIU = 6'b001011;
 localparam SW = 6'b101011;
 localparam XORI = 6'b001110;
+localparam HALT = 6'b111111;
 
 
 always @(*)
@@ -74,6 +77,7 @@ case(Op)
 			RegDst=0;//
 			RegWrite=1;
 			Branch=0;
+			TipoExtension=1;
 		end
 	ADDIU:
 		begin
@@ -84,6 +88,7 @@ case(Op)
 			RegDst=0;//
 			RegWrite=1;
 			Branch=0;
+			TipoExtension=1;
 		end 
 	ANDI:
 		begin
@@ -94,6 +99,7 @@ case(Op)
 			RegDst=0;//
 			RegWrite=1;
 			Branch=0;
+			TipoExtension=0;
 		end 
 	BEQ:
 		begin
@@ -194,6 +200,7 @@ case(Op)
 			RegDst=0;//
 			RegWrite=1;
 			Branch=0;
+			TipoExtension=0;
 		end 
 	SB:
 		begin
@@ -224,6 +231,7 @@ case(Op)
 			RegDst=0;//
 			RegWrite=1;
 			Branch=0;
+			TipoExtension=1;
 		end  
 	SLTIU:
 		begin
@@ -234,6 +242,7 @@ case(Op)
 			RegDst=0;//
 			RegWrite=0;
 			Branch=0;
+			TipoExtension=1;
 		end  
 	SW:
 		begin
@@ -254,8 +263,20 @@ case(Op)
 			RegDst=1;//
 			RegWrite=1;
 			Branch=0;
+			TipoExtension=0;
 		end
-	default:
+	HALT:
+		begin
+			ALUControl=6'b000000;	
+			MemtoReg=0;
+			MemWrite=0;
+			ALUSrc=0;
+			RegDst=1;
+			RegWrite=1;
+			Branch=0;
+			Halt=1;
+		end
+	default: //NOP
 		begin
 			ALUControl= 6'b000000;	
 			MemtoReg=0;//
@@ -267,21 +288,5 @@ case(Op)
 		end
 endcase	
 end		
-		
-//	reg [6:0] controls;
-//	assign {RegWrite, RegDst, ALUSrc, Branch, MemWrite, MemtoReg, Branch} controls;
-	
-	// Establecer las lineas de control segun la opcion.
-//	always @ (*)
-//	case(opcion)
-//		6'b000000: controls <= 9'b1100000; //R
-//		6'b100011: controls <= 9'b1010010; //LW
-//		6'b101011: controls <= 9'b0010100; //SW
-//		6'b000100: controls <= 9'b0001000; //BEQ
-//		6'b001000: controls <= 9'b1010000; //ADDI
-//		6'b000010: controls <= 9'b0000001; //J
-//		default:	controls <= 9'bxxxxxxx; //NODEF
-		
-//	endcase
 
 endmodule

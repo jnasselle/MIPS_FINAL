@@ -20,8 +20,8 @@
 //////////////////////////////////////////////////////////////////////////////////
 module Extension( 
 	input [15:0] data_in,
-	output [31:0] data_out
-	//input tipo	//TRUE=>Con Signo,FALSE=>Sin Signo
+	output [31:0] data_out,
+	input tipo	//TRUE=>Con Signo,FALSE=>Sin Signo
     );
 	 assign data_out = {{16{data_in[15]}}, data_in};
 
