@@ -101,7 +101,7 @@ wire [31:0] MEM_ALUOut;
 wire [31:0] MEM_WriteData;
 wire [4:0] MEM_WriteReg;
 wire [31:0] MEM_RD;
-wire EX_Halt;
+wire MEM_Halt;
 
 
 /*
@@ -133,7 +133,7 @@ Mux2 IF_Mux2 (
     );
 
 	 
-MemInstrucciones MEM_MemInstrucciones (
+MemInstrucciones IF_MemInstrucciones (
   .clka(clk), 	// input clka
   .addra(IF_PC), 	// input [31 : 0] addra
   .douta(IF_RD) 	// output [31 : 0] douta
@@ -367,7 +367,7 @@ de1a4 MEM_de1a4 (
     .out(MEM_MemWrite4)
     );
 
-MemDatos IF_MemDatos (
+MemDatos MEM_MemDatos (
   .clka(clk), // input clka
   .wea(MEM_MemWrite4), // input [3 : 0] wea
   .addra(MEM_ALUOut), // input [31 : 0] addra
