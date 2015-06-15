@@ -44,6 +44,7 @@ wire [31:0] ID_Instruccion;
 wire ID_RegWrite;	//Se debe escribir un registro?
 wire ID_MemToReg;	//Existe writeback?
 wire ID_MemWrite;	//Se graba la memoria de dato? 
+wire [2:0] ID_MemOp;		//Indica si la operatoria de la memoria es por byte,halfword o word
 wire [5:0] ID_ALUControl;	//Control de la ALU
 wire ID_ALUSrc;	//El operando de la ALU es un reg o un imm?
 wire ID_RegDest;	//El registro destino es rd o rt?
@@ -68,7 +69,8 @@ wire ID_Halt;
 
 wire EX_RegWrite;	//Se debe escribir un registro?
 wire EX_MemtoReg;	//Existe writeback?
-wire EX_MemWrite;	//Se graba la memoria de dato? 
+wire EX_MemWrite;	//Se graba la memoria de dato?
+wire [2:0] EX_MemOp;
 wire [5:0] EX_ALUControl;	//Control de la ALU
 wire EX_ALUSrc;	//El operando de la ALU es un reg o un imm?
 wire EX_RegDest;	//El registro destino es rd o rt?
@@ -96,6 +98,7 @@ wire EX_Halt;
 wire MEM_RegWrite;	//Se debe escribir un registro?
 wire MEM_MemtoReg;	//Existe writeback?
 wire MEM_MemWrite;	//Se graba la memoria de datos?
+wire [2:0] MEM_MemOp;
 wire [3:0] MEM_MemWrite4;
 wire [31:0] MEM_ALUOut;
 wire [31:0] MEM_WriteData;
@@ -276,7 +279,8 @@ ID_EX DataPath_ID_EX (
 	.ALUSrcIn(ID_ALUSrc), 
 	.RegWriteIn(ID_RegWrite), 
 	.MemtoRegIn(ID_MemtoReg), 
-	.MemWriteIn(ID_MemWrite), 
+	.MemWriteIn(ID_MemWrite),
+	.MemOpIn(ID_MemOp),	
 	.RegDstIn(ID_RegDst), 
 	.HaltIn(ID_Halt),
 	////////////////////////////////////////////////////////////////////////////////////
@@ -290,7 +294,8 @@ ID_EX DataPath_ID_EX (
 	.ALUSrcOut(EX_ALUSrc), 
 	.RegWriteOut(EX_RegWrite), 
 	.MemtoRegOut(EX_MemtoReg), 
-	.MemWriteOut(EX_MemWrite), 
+	.MemWriteOut(EX_MemWrite),
+	.MemOpOut(EX_MemOp),	
 	.RegDstOut(EX_RegDest),
 	.HaltOut(EX_Halt)
     );	 
@@ -348,6 +353,7 @@ EX_MEM DataPath_EX_MEM (
     .RegWriteIn(EX_RegWrite), //Control
     .MemtoRegIn(EX_MemtoReg), //Control
     .MemWriteIn(EX_MemWrite), //Control
+	 .MemOpIn(EX_MemOp),
     .ALUResultIn(EX_ALUOut),	//Datos
     .WriteRegIn(EX_WriteReg), //Numero de Registro para writeback
     .WriteDataIn(EX_WriteData), //Datos para writeback
@@ -356,23 +362,22 @@ EX_MEM DataPath_EX_MEM (
     .RegWriteOut(MEM_RegWrite), //Control 
     .MemtoRegOut(MEM_MemtoReg), //Control 
     .MemWriteOut(MEM_MemWrite), //Control 
+	 .MemOpOut(MEM_MemOp),
     .ALUResultOut(MEM_ALUOut), //Datos
     .WriteDataOut(MEM_WriteData),	//DATOS
     .WriteRegOut(MEM_WriteReg), //Direccion de Registro
 	 .HaltOut(MEM_Halt)
     );
 
-de1a4 MEM_de1a4 (
-    .in(MEM_MemWrite), 
-    .out(MEM_MemWrite4)
-    );
 
 MemDatos MEM_MemDatos (
-  .clka(clk), // input clka
-  .wea(MEM_MemWrite4), // input [3 : 0] wea
-  .addra(MEM_ALUOut), // input [31 : 0] addra
-  .dina(MEM_WriteData), // input [31 : 0] dina
-  .douta(MEM_RD) // output [31 : 0] douta
+  .clk(clk), // input clka
+  .we(MEM_MemWrite), // input [3 : 0] wea
+  .op(MEM_MemOp),
+  .addr(MEM_ALUOut), // input [31 : 0] addra
+  .din(MEM_WriteData), // input [31 : 0] dina
+  .dout(MEM_RD), // output [31 : 0] douta
+  .memoria()	//Debug Unit
 );
 
 /*

@@ -19,41 +19,46 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module MemDatos(
-  wire clka, // input clka
-  input [2:0] write, // input [3 : 0] wea
-  input [2:0] read,
-  input [31:0] addr, // input [31 : 0] addra
-  input [31:0] dina, // input [31 : 0] dina
-  output reg [31:0] dout,
-  output reg [31:0] memoria[15:0]	//Para almacenar 16 palabra
+	wire clk, // input clka
+	wire we,
+	wire [2:0] op,
+	input [31:0] addr, // input [31 : 0] addra
+	input [31:0] din, // input [31 : 0] dina
+	output reg [31:0] dout,
+	output reg [7:0] memoria[63:0]	//Para almacenar 16 palabra
     );
-localparam WORD = 0;
-localparam HALFWORD = 1;
-localparam BYTE = 2;
 
-// TODO: ver ENDIANESS de la memoria
-always@(posedge clka)
+always@(posedge clk)
 begin
-	case (read)
-		WORD:
-			dout<=memoria[addr];
-		HALFWORD:
-			dout<=memoria[addr] & 32'hFFFF0000;
-		BYTE:
-			dout<=memoria[addr] & 32'hFF000000;
-	endcase
-end
-
-
-always@(posedge clka)
-begin
-	case (write)
-		WORD:
-			memoria[addr]<=din;
-		HALFWORD:
-			memoria[addr]<=din & 32'hFFFF0000;
-		BYTE:
-			memoria[addr]<=din & 32'hFF000000;	
-	endcase
+	if(we)
+		begin
+			case (op)
+				BYTE:
+					memoria[addr]<=din[7:0];
+				HALFWORD:
+					begin
+					memoria[addr]<=din[7:0];
+					memoria[addr+1]<=din[15:8];
+					end
+				WORD:
+					begin
+					memoria[addr]<=din[7:0];
+					memoria[addr+1]<=din[15:8];
+					memoria[addr+2]<=din[23:16];
+					memoria[addr+3]<=din[31:24];
+					end
+			endcase
+		end
+	else
+		begin
+			case (op)
+				BYTE:
+					dout<={memoria[addr],{24{0}}};
+				HALFWORD:
+					dout<={memoria[addr],memoria[addr+1],{16{0}}};
+				WORD:
+					dout<={memoria[addr],memoria[addr+1],memoria[addr+2],memoria[addr+3]};
+			endcase
+		end
 end
 endmodule

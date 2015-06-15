@@ -33,6 +33,7 @@ module ID_EX(
 	input	RegWriteIn,
 	input	MemtoRegIn,
 	input	MemWriteIn,
+	input [2:0] MemOpIn,
 	input	RegDstIn,
 	input HaltIn,
 	output reg [31:0] RegData1Out,
@@ -46,6 +47,7 @@ module ID_EX(
 	output reg	RegWriteOut,
 	output reg	MemtoRegOut,
 	output reg	MemWriteOut,
+	output reg [2:0] MemOpOut,
 	output reg	RegDstOut,
 	output reg 	HaltOut
 
