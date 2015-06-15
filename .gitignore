@@ -3,6 +3,9 @@
 #No Ignorar archivos .v y .ucf
 !*.v
 !*.ucf
+!*.asm
+!*.coe
+!Ensamblador.exe
 #!.gitignore
 #!/ipcore_dir/
 #!/ipcore_dir/*.xco
