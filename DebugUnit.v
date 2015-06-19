@@ -60,6 +60,7 @@ module DebugUnit(
 		
 			IDLE: 
 			begin
+				contador=0;
 				if(rx_rdy==1)
 					begin
 						if(rx_bus==1)
@@ -105,24 +106,33 @@ module DebugUnit(
 						begin 
 							next_state=SEND;
 							tx_write=1;
+							contador=contador+1;
 							tx_bus=8'b11111111; //case
 						end
 					else
+						begin
 						next_state=FIN;
+						tx_write=0;
+						end
 				else
 					if(contador!=175)
 						begin 
+							contador=contador+1;
 							next_state=SEND;
 							tx_write=1;
-							tx_bus=8'b11111111; //case
+							tx_bus=8'b10101010; //case
 						end
 					else
-						next_state=IDLE;					
+						begin
+						next_state=IDLE;
+						tx_write=0;
+						end
 			end
 			
 			FIN: 
 			begin
 				next_state=FIN;
+				contador=0;
 			end
 
 						

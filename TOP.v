@@ -23,6 +23,7 @@ module TOP(
 	input rst,
 	input rx,
 	input [1400:0] bus,
+	input halt,
 	output tx
     );
 	 
@@ -53,7 +54,7 @@ DebugUnit instance_name (
     .rx_rdy(TOP_rx_rdy), 
     .rx_bus(TOP_rx_data), 
     .DataPath_bus(bus), 
-    .halt_in(TOP_halt), 
+    .halt_in(halt), 
     .Datapath_clk(Datapath_clk), 
     .tx_write(TOP_write_enable), 
     .tx_bus(TOP_tx_data)
