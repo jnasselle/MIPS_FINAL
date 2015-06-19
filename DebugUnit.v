@@ -24,7 +24,7 @@ module DebugUnit(
 	
 	//Entradas desde UART
 	input wire rx_done_tick,
-	input wire tx_done_tick,
+	//input wire tx_done_tick,
 	input wire [7:0] rx_bus,
 	
 	//Entradas desde DataPath
@@ -35,7 +35,7 @@ module DebugUnit(
 	output reg Datapath_reset,
 	 
 	//Salidas para UART
-	output reg tx_start,
+	output reg tx_write,
 	output wire [7:0] tx_bus
 	);
 	 
