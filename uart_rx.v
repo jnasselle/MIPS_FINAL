@@ -1,105 +1,91 @@
 `timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date:    08:30:20 06/19/2015 
+// Design Name: 
+// Module Name:    uart_rx 
+// Project Name: 
+// Target Devices: 
+// Tool versions: 
+// Description: 
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments: 
+//
+//////////////////////////////////////////////////////////////////////////////////
 
-module uart_rx
-					#(parameter 	DBIT = 8 , // # numero de bits de datos
-										SB_TICK = 16 ) // #  el nmero de pasos necesarios para los bits de parada
-					(
-					input wire clk, reset,
-					input wire rx, s_tick,
-					output reg rx_done_tick, //Luego de recibir la palabra confirma
-					output wire [7:0] dout
-					);
-					
-	localparam [1:0]
-		idle = 2'b00,
-		start = 2'b01,
-		data = 2'b10,
-		stop = 2'b11;
 
-		reg [1:0] state_reg , state_next;
-		reg [3:0] s_reg , s_next;
-		reg [2:0] n_reg , n_next;
-		reg [7:0] b_reg , b_next;
-		
-		initial
-		begin
-			rx_done_tick=0;
-			state_reg = 0;
-			state_next=0;
-			s_reg=0;
-			s_next=0;
-			n_reg=0;
-			n_next=0;
-			b_reg=0;
-			b_next=0;
-		end
+module uart_rx (
+  // Write side inputs
+  input            clk_rx,       // Clock input
+  input            rst_clk_rx,   // Active HIGH reset - synchronous to clk_rx
 
-		always @( posedge clk , posedge reset )
-		if (reset)
-			begin
-				state_reg <= idle;
-				s_reg <= 0 ;
-				n_reg <= 0 ;
-				b_reg <= 0 ;
-			end
-		else
-			begin
-				state_reg <= state_next ;
-				s_reg <= s_next ;
-				n_reg <= n_next;
-				b_reg <= b_next;
-			end
+  input            rxd_i,        // RS232 RXD pin - Directly from pad
 
-		//FSMD next_state logic
-		always @*
-		begin
-			state_next = state_reg;
-			rx_done_tick = 1'b0;
-			s_next = s_reg;
-			n_next = n_reg;
-			b_next = b_reg;
-			case( state_reg )
-				idle:
-					if(~rx)
-					begin
-						state_next = start;
-						s_next = 0;
-					end
-				start:
-					if(s_tick)
-						if(s_reg==7)
-						begin
-							state_next = data;
-							s_next = 0 ;
-							n_next = 0 ;
-						end
-						else
-							s_next = s_reg + 1'b1 ;
-				data:
-					if(s_tick)
-						if (s_reg==15)
-						begin
-							s_next = 0 ;
-							b_next = {rx , b_reg [7:1]} ;
-							if(n_reg==(DBIT-1))
-								state_next = stop;
-							else
-								n_next = n_reg + 1'b1 ;
-						end
-					else
-						s_next = s_reg + 1'b1 ;
-				stop:
-					if(s_tick)
-						if(s_reg==(SB_TICK-1))
-						begin
-							state_next = idle ;
-							rx_done_tick =1'b1;
-						end
-						else
-							s_next = s_reg + 1'b1;
-			endcase
-	end
-	//output
-	assign dout = b_reg ;
+  output     [7:0] rx_data,      // 8 bit data output
+                                 //  - valid when rx_data_rdy is asserted
+  output           rx_data_rdy,  // Ready signal for rx_data
+  output           frm_err       // The STOP bit was not detected
+);
+
+
+//***************************************************************************
+// Parameter definitions
+//***************************************************************************
+
+  parameter BAUD_RATE    = 14400;             // Baud rate 2400
+  parameter CLOCK_RATE   = 3_125_000;
+
+//***************************************************************************
+// Reg declarations
+//***************************************************************************
+
+//***************************************************************************
+// Wire declarations
+//***************************************************************************
+
+  wire             rxd_clk_rx;   // RXD pin, synchronized to clk_rx
+
+  wire             baud_x16_en;  // 1-in-N enable for uart_rx_ctl FFs
+  
+//***************************************************************************
+// Code
+//***************************************************************************
+
+  /* Synchronize the RXD pin to the clk_rx clock domain. Since RXD changes
+  * very slowly wrt. the sampling clock, a simple metastability hardener is
+  * sufficient */
+  meta_harden meta_harden_rxd_i0 (
+    .clk_dst      (clk_rx),
+    .rst_dst      (rst_clk_rx), 
+    .signal_src   (rxd_i),
+    .signal_dst   (rxd_clk_rx)
+  );
+
+  uart_baud_gen #
+  ( .BAUD_RATE  (BAUD_RATE),
+    .CLOCK_RATE (CLOCK_RATE)
+  ) uart_baud_gen_rx_i0 (
+    .clk         (clk_rx),
+    .rst         (rst_clk_rx),
+    .baud_x16_en (baud_x16_en)
+  );
+
+  uart_rx_ctl uart_rx_ctl_i0 (
+    .clk_rx      (clk_rx),
+    .rst_clk_rx  (rst_clk_rx),
+    .baud_x16_en (baud_x16_en),
+
+    .rxd_clk_rx  (rxd_clk_rx),
+    
+    .rx_data_rdy (rx_data_rdy),
+    .rx_data     (rx_data),
+    .frm_err     (frm_err)
+  );
+
 endmodule
-

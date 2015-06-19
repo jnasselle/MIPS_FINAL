@@ -1,129 +1,77 @@
 `timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date:    08:31:35 06/19/2015 
+// Design Name: 
+// Module Name:    uart_tx 
+// Project Name: 
+// Target Devices: 
+// Tool versions: 
+// Description: 
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments: 
+//
+//////////////////////////////////////////////////////////////////////////////////
+module uart_tx (
+  input        clk_tx,          // Clock input
+  input        rst_clk_tx,      // Active HIGH reset - synchronous to clk_tx
 
-module uart_tx
-	#(
-		parameter	DBIT=8,//#databits
-						SB_TICK=16//#ticksforstopbits
-	)
-	(
-		input wire clk,reset,
-		input wire tx_start,s_tick,
-		input wire [7:0] din,
-		output reg tx_done_tick,
-		output wire tx
-	);
+  input        char_fifo_empty, // Empty signal from char FIFO (FWFT)
+  input  [7:0] char_fifo_dout,  // Data from the char FIFO
+  output       char_fifo_rd_en, // Pop signal to the char FIFO
 
-	localparam[1:0]
-	idle 	= 2'b00,
-	start = 2'b01,
-	data	= 2'b10,
-	stop	= 2'b11;
+  output       txd_tx           // The transmit serial signal
+);
 
-	reg [1:0] state_reg, state_next;
-	reg [3:0] s_reg, s_next;
-	reg [2:0] n_reg, n_next;
-	reg [7:0] b_reg, b_next;
-	reg tx_reg, tx_next;
 
-	initial begin
-		state_reg=0;
-		state_next=0;
-		s_reg=0;
-		s_next=0;
-		n_reg=0;
-		n_next=0;
-		b_reg=0;
-		b_next=0;
-		tx_reg=0;
-		tx_next=0;
-		tx_done_tick=0;
-	end
-	
-	always @(posedge clk, posedge reset)
-		if(reset)
-			begin
-				state_reg <= idle;
-				s_reg <= 0;
-				n_reg <= 0;
-				b_reg	<= 0;
-				tx_reg <= 1;
-			end
-		else
-			begin
-				state_reg <= state_next;
-				s_reg <= s_next;
-				n_reg <= n_next;
-				b_reg <= b_next;
-				tx_reg <= tx_next;
-			end
-			
-			
-	//FSMDnext_statelogic&functionalunits
-	always @*
-		begin
-			state_next = state_reg;
-			tx_done_tick = 1'b0;
-			s_next = s_reg;
-			n_next = n_reg;
-			b_next = b_reg;
-			tx_next = tx_reg;
-			case(state_reg)
-				idle:
-					begin
-						tx_next = 1'b1;
-						if(tx_start)
-							begin
-								state_next = start;
-								s_next = 0;
-								b_next = din;
-							end
-					end
-				start:
-					begin
-						tx_next = 1'b0;
-						if(s_tick)
-							if(s_reg == 15)
-								begin
-									state_next = data;
-									s_next = 0;
-									n_next = 0;
-								end
-							else
-								s_next = s_reg+1'b1;
-					end
-				data:
-					begin
-						tx_next = b_reg[0];
-						if(s_tick)
-							if(s_reg == 15)
-								begin
-									s_next = 0;
-									b_next = b_reg >> 1;
-									if(n_reg == (DBIT-1))
-										state_next = stop;
-									else
-										n_next = n_reg + 1'b1;
-								end
-							else
-								s_next = s_reg + 1'b1;
-					end
-				stop:
-					begin
-						tx_next = 1'b1;
-						if(s_tick)
-							if(s_reg == (SB_TICK-1))
-								begin
-									state_next = idle;
-									tx_done_tick = 1'b1;
-								end
-							else
-								s_next = s_reg + 1'b1;
-					end
-			endcase
-		end
-		
-		
-	//output
-	assign tx = tx_reg;
+//***************************************************************************
+// Parameter definitions
+//***************************************************************************
+
+  parameter BAUD_RATE    = 14400;              // Baud rate 2400
+
+  parameter CLOCK_RATE   = 3_125_000;
+
+//***************************************************************************
+// Reg declarations
+//***************************************************************************
+
+//***************************************************************************
+// Wire declarations
+//***************************************************************************
+
+  wire             baud_x16_en;  // 1-in-N enable for uart_rx_ctl FFs
+  
+//***************************************************************************
+// Code
+//***************************************************************************
+
+  uart_baud_gen #
+  ( .BAUD_RATE  (BAUD_RATE),
+    .CLOCK_RATE (CLOCK_RATE)
+  ) uart_baud_gen_tx_i0 (
+    .clk         (clk_tx),
+    .rst         (rst_clk_tx),
+    .baud_x16_en (baud_x16_en)
+  );
+
+  uart_tx_ctl uart_tx_ctl_i0 (
+    .clk_tx	        (clk_tx),          // Clock input
+    .rst_clk_tx	        (rst_clk_tx),      // Active HIGH reset
+
+    .baud_x16_en        (baud_x16_en),     // 16x oversample enable
+
+    .char_fifo_empty	(char_fifo_empty), // Empty signal from char FIFO (FWFT)
+    .char_fifo_dout	(char_fifo_dout),  // Data from the char FIFO
+    .char_fifo_rd_en	(char_fifo_rd_en), // Pop signal to the char FIFO
+
+    .txd_tx	        (txd_tx)           // The transmit serial signal
+  );
 
 endmodule

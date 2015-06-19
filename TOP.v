@@ -28,15 +28,13 @@ module TOP(
 // Instantiate UART
 UART TOP_UART (
     .clk(clk), 
-    .reset(reset), 
-    .rd_uart(rd_uart), 
-    .wr_uart(wr_uart), 
+    .rst(rst), 
     .rx(rx), 
     .w_data(w_data), 
-    .tx_full(tx_full), 
-    .rx_empty(rx_empty), 
+    .write_enable(write_enable), 
     .tx(tx), 
-    .r_data(r_data)
+    .rx_data(rx_data), 
+    .rx_data_rdy(rx_data_rdy)
     );
 
 
