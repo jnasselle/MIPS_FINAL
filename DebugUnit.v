@@ -37,7 +37,7 @@ module DebugUnit(
 	 
 	//Salidas para UART
 	output reg tx_write,		//WR para que mande a la cola el nuevo daato
-	output wire [7:0] tx_bus
+	output reg [7:0] tx_bus		//ver bien
 	);
 	 
 	reg [1375:0] datos = 0;
@@ -47,7 +47,7 @@ module DebugUnit(
    parameter IDLE = 5'b00001;
 	parameter PAP = 5'b00010;
 	parameter CONT = 5'b00100;
-	parameter SEND = 5'b01000
+	parameter SEND = 5'b01000;
 	parameter FIN = 5'b10000;
 	
 	reg [4:0] state = IDLE;
@@ -73,8 +73,16 @@ module DebugUnit(
 			
 			PAP: 
 			begin
-				next_state=SEND;
-				Datapath_clk=1;
+				if(Datapath_clk==0)
+					begin 
+						next_state=SEND;
+						Datapath_clk=1;
+					end
+				else
+					begin
+						next_state=PAP;
+						Datapath_clk=0;
+					end
 			end	
 			
 			CONT: 
