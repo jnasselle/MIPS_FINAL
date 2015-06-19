@@ -22,34 +22,41 @@ module TOP(
 	input clk,
 	input rst,
 	input rx,
+	input [1400:0] bus,
 	output tx
     );
 	 
 //Wires
 wire TOP_write_enable;
+wire TOP_rx_rdy;
+wire [7:0] TOP_rx_data;
+wire [7:0] TOP_tx_data;
+wire TOP_halt;
+wire [1400:0] TOP_DataPath_bus;
+wire TOP_clk_DataPath;
 	 
 // Instantiate UART
 UART TOP_UART (
     .clk(clk), 
     .rst(rst), 
     .rx(rx), 
-    .w_data(w_data), 
-    .write_enable(write_enable), 
+    .w_data(TOP_tx_data), 
+    .write_enable(TOP_write_enable), 
     .tx(tx), 
-    .rx_data(rx_data), 
-    .rx_data_rdy(rx_data_rdy)
+    .rx_data(TOP_rx_data), 
+    .rx_data_rdy(TOP_rx_rdy)
     );
 	 
 // Instantiate DebugUnit
-DebugUnit TOP_DebugUnit (
+DebugUnit instance_name (
     .clk(clk), 
-    .rx_done_tick(rx_done_tick), 
-    .rx_bus(rx_bus), 
-    .DataPath_bus(DataPath_bus), 
+    .rx_rdy(TOP_rx_rdy), 
+    .rx_bus(TOP_rx_data), 
+    .DataPath_bus(bus), 
+    .halt_in(TOP_halt), 
     .Datapath_clk(Datapath_clk), 
-    .Datapath_reset(Datapath_reset), 
-    .tx_write(tx_write), 
-    .tx_bus(tx_bus)
+    .tx_write(TOP_write_enable), 
+    .tx_bus(TOP_tx_data)
     );
 
 
