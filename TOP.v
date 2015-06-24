@@ -49,7 +49,7 @@ UART TOP_UART (
     );
 	 
 // Instantiate DebugUnit
-DebugUnit instance_name (
+DebugUnit TOP_DebugUnit (
     .clk(clk), 
     .rx_rdy(TOP_rx_rdy), 
     .rx_bus(TOP_rx_data), 

@@ -52,10 +52,14 @@ module DebugUnit(
 	
 	reg [4:0] state = IDLE;
 	reg [4:0] next_state = IDLE;
+	reg [4:0] current_state=IDLE;
 
-	always@(posedge clk)
-	begin
-		
+//logica de entrada
+
+	
+//logica de cambio de estado
+always @*
+	begin		
 		case (state)
 		
 			IDLE: 
@@ -137,6 +141,7 @@ module DebugUnit(
 
 						
 		endcase
+		current_state<=next_state;
 	end
 
 
