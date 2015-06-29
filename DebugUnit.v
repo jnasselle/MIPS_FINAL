@@ -44,15 +44,17 @@ module DebugUnit(
 	reg [7:0] contador = 0;
 	//reg [5:0] contador_fin = 0;
 
-   parameter IDLE = 5'b00001;
-	parameter PAP = 5'b00010;
-	parameter CONT = 5'b00100;
-	parameter SEND = 5'b01000;
-	parameter FIN = 5'b10000;
+   parameter IDLE = 7'b0000001;
+	parameter PAP1 = 7'b0000010;
+	parameter PAP2 = 7'b0000100;
+	parameter CONT = 7'b0001000;
+	parameter SEND = 7'b0010000;
+	parameter SENDING = 7'b0100000;
+	parameter FIN = 7'b1000000;
 	
-	reg [4:0] state = IDLE;
-	reg [4:0] next_state = IDLE;
-	reg [4:0] current_state=IDLE;
+	//reg [6:0] state = IDLE;
+	reg [6:0] next_state = IDLE;
+	reg [6:0] current_state=IDLE;
 
 //logica de entrada
 
@@ -60,7 +62,7 @@ module DebugUnit(
 //logica de cambio de estado
 always @*
 	begin		
-		case (state)
+		case (current_state)
 		
 			IDLE: 
 			begin
@@ -68,7 +70,8 @@ always @*
 				if(rx_rdy==1)
 					begin
 						if(rx_bus==1)
-							next_state=PAP;
+							Datapath_clk=0;
+							next_state=PAP1;
 						else
 							next_state=CONT;
 					end
@@ -76,18 +79,16 @@ always @*
 					next_state=IDLE;
 			end
 			
-			PAP: 
+			PAP1: 
 			begin
-				if(Datapath_clk==0)
-					begin 
-						next_state=SEND;
-						Datapath_clk=1;
-					end
-				else
-					begin
-						next_state=PAP;
-						Datapath_clk=0;
-					end
+				next_state=PAP2;
+				Datapath_clk=1;
+			end
+			
+			PAP1: 
+			begin
+				next_state=SEND;
+				Datapath_clk=0;
 			end	
 			
 			CONT: 
@@ -108,7 +109,7 @@ always @*
 				if(halt_in==1)
 					if(contador!=175)
 						begin 
-							next_state=SEND;
+							next_state=SENDING;
 							tx_write=1;
 							contador=contador+1;
 							tx_bus=8'b11111111; //case
@@ -122,7 +123,7 @@ always @*
 					if(contador!=175)
 						begin 
 							contador=contador+1;
-							next_state=SEND;
+							next_state=SENDING;
 							tx_write=1;
 							tx_bus=8'b10101010; //case
 						end
@@ -132,6 +133,20 @@ always @*
 						tx_write=0;
 						end
 			end
+			
+			SENDING: 
+			begin
+				if(tx_done==0)
+				begin
+					next_state=SENDING;
+				end
+				else
+				begin
+					next_state=SEND;
+				else
+			end
+			
+			
 			
 			FIN: 
 			begin
