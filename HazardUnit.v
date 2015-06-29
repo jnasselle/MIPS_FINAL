@@ -32,6 +32,7 @@ module HazardUnit(
 	input MemToRegE,
 	input MemToRegM,
 	input BranchD,
+	input JumpD,
 	output reg StallF,
 	output reg StallD,
 	output reg ForwardAD,
@@ -85,7 +86,7 @@ begin
 	//Finalmente establece signals de stall por load o branch.
 	StallF = lwstall || branchstall;
 	StallD = lwstall || branchstall;
-	FlushE = lwstall || branchstall;
+	FlushE = lwstall || branchstall || JumpD;
 	
 end
 

@@ -27,6 +27,7 @@ module ControlUnit(
 	output reg RegDst,	//1:El WB es sobre Rt(Load y Op Imm), 0: El WB es sobre Rd (Op R)
 	output reg RegWrite,	//1:Resto ,0: Store
 	output reg Branch,	//1:Branches, 0: Resto
+	output reg Jump,		//1:Jumps, 0:Resto
 	output reg [5:0] ALUControl, //salida en caso de ser necesario.
 	output reg TipoExtension,	//operaciones que necesitan extencion
 	output reg [2:0] MemOp,
@@ -52,8 +53,7 @@ localparam SH = 6'b101001;
 localparam SLTI = 6'b001010;
 localparam SLTIU = 6'b001011;
 localparam SW = 6'b101011;
-//localparam J = 6'b000010;
-//localparam JAL = 6'b000011;
+localparam J = 6'b000010;
 localparam XORI = 6'b001110;
 localparam HALT = 6'b111111;
 
@@ -129,7 +129,13 @@ case(Op)
 			RegWrite=0;//
 			Branch=1;
 			MemOp=3'b000;
-		end   
+		end
+	J:
+		begin
+			Jump=1;
+			MemWrite=0;
+			RegWrite=0;
+		end
 	LB:
 		begin
 			ALUControl= 6'b100000;	

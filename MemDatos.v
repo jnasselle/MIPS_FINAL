@@ -19,16 +19,58 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module MemDatos(
-	wire clk, // input clka
-	wire we,
-	wire [2:0] op,
+	input clk, // input clka
+	input we,
+	input [2:0] op,
 	input [31:0] addr, // input [31 : 0] addra
 	input [31:0] din, // input [31 : 0] dina
 	output reg [31:0] dout,
-	output reg [7:0] memoria[63:0]	//Para almacenar 16 palabra
+	output [255:0] mem//Para almacenar 16 palabra
     );
+	 
+reg [7:0] memoria[31:0];	//Se pueden almacenar 8 palabras de 32 bits
 
-always@(posedge clk)
+assign mem={
+	memoria[0],
+	memoria[1],
+	memoria[2],
+	memoria[3],
+	memoria[4],
+	memoria[5],
+	memoria[6],
+	memoria[7],
+	memoria[8],
+	memoria[9],
+	memoria[10],
+	memoria[11],
+	memoria[12],
+	memoria[13],
+	memoria[14],
+	memoria[15],
+	memoria[16],
+	memoria[17],
+	memoria[18],
+	memoria[19],
+	memoria[20],
+	memoria[21],
+	memoria[22],
+	memoria[23],
+	memoria[24],
+	memoria[25],
+	memoria[26],
+	memoria[27],
+	memoria[28],
+	memoria[29],
+	memoria[30],
+	memoria[31]
+	};
+
+
+localparam BYTE=3'b001;
+localparam HALFWORD=3'b010;
+localparam WORD=3'b100;
+
+always@(negedge clk)
 begin
 	if(we)
 		begin
@@ -52,13 +94,16 @@ begin
 	else
 		begin
 			case (op)
-				BYTE:
-					dout<={memoria[addr],{24{0}}};
-				HALFWORD:
-					dout<={memoria[addr],memoria[addr+1],{16{0}}};
-				WORD:
-					dout<={memoria[addr],memoria[addr+1],memoria[addr+2],memoria[addr+3]};
+					BYTE:
+						dout<={memoria[addr],{24{1'b0}}};
+					HALFWORD:
+						dout<={memoria[addr],memoria[addr+1],{16{1'b0}}};
+					WORD:
+						dout<={memoria[addr],memoria[addr+1],memoria[addr+2],memoria[addr+3]};
 			endcase
 		end
+	
 end
+
+
 endmodule

@@ -38,11 +38,11 @@ module MEM_WB(
 
 initial
 begin
-	MemDataOut<=0;
-	ALUDataOut<=0;
-	WriteRegOut<=0;
-	RegWriteOut<=0;
-	MemtoRegOut<=0;
+	MemDataOut=0;
+	ALUDataOut=0;
+	WriteRegOut=0;
+	RegWriteOut=0;
+	MemtoRegOut=0;
 end
 
 always@(posedge clk)

@@ -27,7 +27,7 @@ module Equal(
 
 always@(*)
 	begin
-	result = Data1 && Data2 && BranchD;
+	result = (Data1 == Data2) && BranchD;
 	end
 
 endmodule

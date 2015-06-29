@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date:    09:28:04 06/02/2015 
+// Create Date:    22:02:24 06/28/2015 
 // Design Name: 
-// Module Name:    PC 
+// Module Name:    JumpAddr 
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -18,22 +18,13 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module PC(
-	input clk,
-	input en,
-	input [31:0] PCIn,
-	output reg [31:0] PCOut=0
+module JumpAddr(
+	input [3:0] PC_relative,
+	input [25:0] Offset,
+	output [31:0] JAddr
     );
+assign JAddr={PC_relative,Offset,2'b0};
 
-
-
-
-
-always @(posedge clk)
-if(en)
-PCOut <= PCIn;
-else
-PCOut <= PCOut;
 
 
 endmodule

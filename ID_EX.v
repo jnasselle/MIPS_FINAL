@@ -55,18 +55,19 @@ module ID_EX(
 	 
 initial
 begin
-	RegData1Out<=0;
-	RegData2Out<=0;
-	ExtendidoOut<=0;
-	rsOut<=0;
-	rtOut<=0;
-	rdOut<=0;	
-	ALUControlOut<=0;
-	ALUSrcOut<=0;
-	RegWriteOut<=0;
-	MemtoRegOut<=0;
-	MemWriteOut<=0;
-	RegDstOut<=0;
+	RegData1Out=0;
+	RegData2Out=0;
+	ExtendidoOut=0;
+	rsOut=0;
+	rtOut=0;
+	rdOut=0;	
+	ALUControlOut=0;
+	ALUSrcOut=0;
+	RegWriteOut=0;
+	MemtoRegOut=0;
+	MemWriteOut=0;
+	RegDstOut=0;
+	MemOpOut=0;
 end
 
 always@(posedge clk)
@@ -84,6 +85,7 @@ begin
 	MemWriteOut<=MemWriteIn;
 	RegDstOut<=RegDstIn;
 	HaltOut<=HaltIn;
+	MemOpOut<=MemOpIn;
 end
 
 

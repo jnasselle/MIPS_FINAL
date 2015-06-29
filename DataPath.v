@@ -20,10 +20,16 @@
 //////////////////////////////////////////////////////////////////////////////////
 module DataPath(
 	input clk,
-	input rx,
 	input reset,
-	output tx
+	output [1023:0] du_reg,
+	output [255:0] du_mem,
+	output [63:0] du_if_id,
+	output [125:0] du_id_ex,
+	output du_halt
 	);
+
+
+	
 
 /*
 	ETAPA DE FETCH
@@ -53,15 +59,19 @@ wire	ID_Branch;
 wire [31:0] ID_RD1;
 wire [31:0] ID_RD2;
 wire [31:0] ID_ImmExtendido;
-wire [31:0] ID_ImmExtendidoS2;	//ID_ImmExtendido<<2
 wire [31:0] ID_PCBranch;
 wire ID_ForwardA;
 wire ID_ForwardB;
 wire [31:0] ID_Mux2_RD1_Out;
 wire [31:0] ID_Mux2_RD2_Out;
-wire ID_PCSrc;
+wire [1:0] ID_PCSrc;		//ID_PCSrc[1] es del Jump,[0] salida del equal
 wire ID_Stall;
 wire ID_Halt;
+wire ID_TipoExtension;
+wire [31:0] ID_JAddr;
+wire ID_Jump;
+
+assign ID_PCSrc[1]=ID_Jump;
 
 /*
 	ETAPA DE EXECUTION
@@ -99,7 +109,6 @@ wire MEM_RegWrite;	//Se debe escribir un registro?
 wire MEM_MemtoReg;	//Existe writeback?
 wire MEM_MemWrite;	//Se graba la memoria de datos?
 wire [2:0] MEM_MemOp;
-wire [3:0] MEM_MemWrite4;
 wire [31:0] MEM_ALUOut;
 wire [31:0] MEM_WriteData;
 wire [4:0] MEM_WriteReg;
@@ -126,11 +135,19 @@ Sumador IF_Sumador (
     .op2(32'd4), //sumamos 4
     .result(IF_PC_Out4)
     );
+	 
+	 
+JumpAddr ID_JumpAddr (
+    .PC_relative(ID_PC4[31:28]), 
+    .Offset(ID_Instruccion[25:0]), 
+    .JAddr(ID_JAddr)
+    );
 
-
-Mux2 IF_Mux2 (
+Mux4 IF_Mux4 (
 	 .in0(IF_PC_Out4), //Salida del sumador
-    .in1(ID_PCBranch), 	//Direccion de Jump
+    .in1(ID_PCBranch), 	//Direccion de Branch
+	 .in2(ID_JAddr),	//Para J
+	 .in3(ID_RD1),		//Para JR
     .out(IF_PC_In), //Va al PC
     .sel(ID_PCSrc)
     );
@@ -151,16 +168,14 @@ MemInstrucciones IF_MemInstrucciones (
 PC IF_PC_Module (
     .clk(clk), 
     .en(IF_Stall), 
-	 .reset(reset),
     .PCIn(IF_PC_In), 
     .PCOut(IF_PC)
     );
 
 IF_ID DataPath_IF_ID(
 	.clk(clk),
-	.reset(reset),
 	.clear(ID_Stall),
-	.enable(ID_PCSrc),
+	.enable( ID_PCSrc[0] || ID_PCSrc[1] ),
 	.instruccionIn(IF_RD),	//Input
 	.PC4In(IF_PC_Out4),
 	.PC4Out(ID_PC4),
@@ -177,7 +192,8 @@ Registros ID_Registros (
     .WD3In(WB_Result),
     .WE3(WB_RegWrite),
     .RD1Out(ID_RD1), 
-    .RD2Out(ID_RD2)
+    .RD2Out(ID_RD2),
+	 .Registros(du_reg)
     );
 
 
@@ -200,22 +216,20 @@ Equal ID_Equal (
     .BranchD(ID_Branch), 
     .Data1(ID_Mux2_RD1_Out), 
     .Data2(ID_Mux2_RD2_Out), 
-    .result(ID_PCSrc)
+    .result(ID_PCSrc[0])
     );
 
 Extension ID_Extension (
     .data_in(ID_Instruccion[15:0]), 
-    .data_out(ID_ImmExtendido)
-    //.tipo()	//TODO!!!
+    .data_out(ID_ImmExtendido),
+    .tipo(ID_TipoExtension)
     );
-
+wire [31:0] ID_ImmExtendidoS2;
 
 ShiftIzq ID_ShiftIzq (
-    .data_in(ID_ImmExtendido), 
+    .data_in(ID_ImmExtendido[29:0]), 
     .data_out(ID_ImmExtendidoS2)
     );
-
-
 Sumador ID_Sumador (
     .op1(ID_ImmExtendidoS2), 
     .op2(ID_PC4), 
@@ -232,8 +246,12 @@ ControlUnit DataPath_ControlUnit (
     .ALUSrc(ID_ALUSrc), 
     .RegDst(ID_RegDst), 
     .RegWrite(ID_RegWrite), 
-    .Branch(ID_Branch), 
-    .ALUControl(ID_ALUControl)
+    .Branch(ID_Branch),
+	 .Jump(ID_Jump),
+    .ALUControl(ID_ALUControl),
+	 .TipoExtension(ID_TipoExtension),
+	 .MemOp(ID_MemOp),
+	 .Halt(ID_Halt)
     );
 
 /////////////////////////////////HazardUnit///////////////////////////////////////	 
@@ -252,7 +270,8 @@ HazardUnit DataPath_HazardUnit (
     .RegWriteW(WB_RegWrite), 
     .MemToRegE(EX_MemtoReg), 
     .MemToRegM(MEM_MemtoReg), 
-    .BranchD(ID_Branch), 
+    .BranchD(ID_Branch),
+	 .JumpD(ID_Jump),
     .StallF(IF_Stall), 
     .StallD(ID_Stall), 
     .ForwardAD(ID_ForwardA), 
@@ -372,12 +391,12 @@ EX_MEM DataPath_EX_MEM (
 
 MemDatos MEM_MemDatos (
   .clk(clk), // input clka
-  .we(MEM_MemWrite), // input [3 : 0] wea
+  .we(MEM_MemWrite),
   .op(MEM_MemOp),
   .addr(MEM_ALUOut), // input [31 : 0] addra
   .din(MEM_WriteData), // input [31 : 0] dina
   .dout(MEM_RD), // output [31 : 0] douta
-  .memoria()	//Debug Unit
+  .mem(du_mem)	//Debug Unit
 );
 
 /*
@@ -410,6 +429,26 @@ Mux2 WB_Mux2_MemToReg (
     .sel(WB_MemToReg)
     );
 
+/*
+	WIRES PARA DEBUG UNIT
+*/
+assign du_if_id = {ID_Instruccion,ID_PC4};
+assign du_id_ex = {
+	EX_RD1, 
+	EX_RD2, 
+	EX_ImmExtendido, 
+	EX_Rs, 
+	EX_Rt, 
+	EX_Rd, 
+	EX_ALUControl, 
+	EX_ALUSrc, 
+	EX_RegWrite, 
+	EX_MemtoReg, 
+	EX_MemWrite,
+	EX_MemOp,	
+	EX_RegDest,
+	EX_Halt
+};
 
-
+assign du_halt=WB_Halt;
 endmodule

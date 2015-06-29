@@ -20,7 +20,6 @@
 //////////////////////////////////////////////////////////////////////////////////
 module IF_ID(
 	input clk,
-	input reset,
 	input clear,
 	input enable,
 	input [31:0] instruccionIn,
@@ -31,17 +30,17 @@ module IF_ID(
 
 initial
 begin
-instruccionOut<=0;
-PC4Out<=0;
+instruccionOut=0;
+PC4Out=0;
 end
 
 
 
-always@ (posedge clk)	//Latch - Falta Clear y Enable
+always@ (posedge clk)
+if(enable)
 begin
 			instruccionOut<=instruccionIn;
 			PC4Out<= PC4In;
 end
-
 
 endmodule

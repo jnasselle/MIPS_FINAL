@@ -85,7 +85,7 @@ module ALU(
 		endcase
 	end
 	
-	assign Zero = (ALUOut == 0) ? 1'b1 : 1'b0;
+	//assign Zero = (ALUOut == 0) ? 1'b1 : 1'b0;
 	assign ALUOut = ALURes;
 
 

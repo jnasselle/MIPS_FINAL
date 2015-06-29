@@ -42,12 +42,12 @@ module EX_MEM(
 
 initial
 begin
-	RegWriteOut<=0;
-	MemtoRegOut<=0;
-	MemWriteOut<=0;
-	ALUResultOut<=0;
-	WriteRegOut<=0;		
-	WriteDataOut<=0;
+	RegWriteOut=0;
+	MemtoRegOut=0;
+	MemWriteOut=0;
+	ALUResultOut=0;
+	WriteRegOut=0;		
+	WriteDataOut=0;
 end
 
 always@(posedge clk)
@@ -59,6 +59,7 @@ begin
 	MemtoRegOut		<=MemtoRegIn;
 	MemWriteOut		<=MemWriteIn;
 	HaltOut			<=HaltIn;
+	MemOpOut			<=MemOpIn;
 end
 
 endmodule
