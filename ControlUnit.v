@@ -70,6 +70,7 @@ case(Op)
 			RegDst=1;
 			RegWrite=1;
 			Branch=0;
+			Jump=0;	
 			MemOp=3'b000;
 		end
 	ADDI:

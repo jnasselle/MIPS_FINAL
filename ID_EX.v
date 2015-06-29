@@ -21,7 +21,7 @@
 module ID_EX(
 	input clk,
 	input reset,
-	input clear,	//Falta Implementar esto
+	input clear,
 	input [31:0] RegData1In,
 	input [31:0] RegData2In,
 	input [31:0] ExtendidoIn,
@@ -68,10 +68,29 @@ begin
 	MemWriteOut=0;
 	RegDstOut=0;
 	MemOpOut=0;
+	HaltOut=0;
 end
 
 always@(posedge clk)
-begin
+if(reset || clear)
+	begin
+	RegData1Out<=0;
+	RegData2Out<=0;
+	ExtendidoOut<=0;
+	rsOut<=0;
+	rtOut<=0;
+	rdOut<=0;	
+	ALUControlOut<=0;
+	ALUSrcOut<=0;
+	RegWriteOut<=0;
+	MemtoRegOut<=0;
+	MemWriteOut<=0;
+	RegDstOut<=0;
+	MemOpOut<=0;
+	HaltOut<=0;
+	end
+else
+	begin
 	RegData1Out<=RegData1In;
 	RegData2Out<=RegData2In;
 	ExtendidoOut<=ExtendidoIn;
@@ -86,7 +105,7 @@ begin
 	RegDstOut<=RegDstIn;
 	HaltOut<=HaltIn;
 	MemOpOut<=MemOpIn;
-end
+	end
 
 
 endmodule

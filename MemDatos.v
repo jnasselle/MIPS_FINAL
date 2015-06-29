@@ -30,6 +30,10 @@ module MemDatos(
 	 
 reg [7:0] memoria[31:0];	//Se pueden almacenar 8 palabras de 32 bits
 
+/*
+	Memoria Little Endian
+
+*/
 assign mem={
 	memoria[0],
 	memoria[1],
@@ -95,11 +99,11 @@ begin
 		begin
 			case (op)
 					BYTE:
-						dout<={memoria[addr],{24{1'b0}}};
+						dout<={{24{1'b0}},memoria[addr]};
 					HALFWORD:
-						dout<={memoria[addr],memoria[addr+1],{16{1'b0}}};
+						dout<={{16{1'b0}},memoria[addr+1],memoria[addr]};
 					WORD:
-						dout<={memoria[addr],memoria[addr+1],memoria[addr+2],memoria[addr+3]};
+						dout<={memoria[addr+3],memoria[addr+2],memoria[addr+1],memoria[addr]};
 			endcase
 		end
 	

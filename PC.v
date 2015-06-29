@@ -21,6 +21,7 @@
 module PC(
 	input clk,
 	input en,
+	input reset,
 	input [31:0] PCIn,
 	output reg [31:0] PCOut=0
     );
@@ -30,10 +31,11 @@ module PC(
 
 
 always @(posedge clk)
-if(en)
+if(reset)
+PCOut <= 0;
+else if(~en)
 PCOut <= PCIn;
 else
 PCOut <= PCOut;
-
 
 endmodule

@@ -154,7 +154,7 @@ Mux4 IF_Mux4 (
 
 	 
 MemInstrucciones IF_MemInstrucciones (
-  .clka(clk), 	// input clka
+  .clka(~clk), 	// input clka
   .addra(IF_PC), 	// input [31 : 0] addra
   .douta(IF_RD) 	// output [31 : 0] douta
 );
@@ -167,15 +167,17 @@ MemInstrucciones IF_MemInstrucciones (
 
 PC IF_PC_Module (
     .clk(clk), 
-    .en(IF_Stall), 
+    .en(IF_Stall), //Activo por bajo
+	 .reset(reset),
     .PCIn(IF_PC_In), 
     .PCOut(IF_PC)
     );
 
 IF_ID DataPath_IF_ID(
 	.clk(clk),
-	.clear(ID_Stall),
-	.enable( ID_PCSrc[0] || ID_PCSrc[1] ),
+	.clear(ID_PCSrc[0] || ID_PCSrc[1]),
+	.reset(reset),
+	.enable(ID_Stall),
 	.instruccionIn(IF_RD),	//Input
 	.PC4In(IF_PC_Out4),
 	.PC4Out(ID_PC4),

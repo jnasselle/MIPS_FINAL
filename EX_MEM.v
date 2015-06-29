@@ -48,10 +48,22 @@ begin
 	ALUResultOut=0;
 	WriteRegOut=0;		
 	WriteDataOut=0;
+	HaltOut=0;
 end
 
 always@(posedge clk)
-begin
+if(reset)
+	begin
+	RegWriteOut<=0;
+	MemtoRegOut<=0;
+	MemWriteOut<=0;
+	ALUResultOut<=0;
+	WriteRegOut<=0;		
+	WriteDataOut<=0;
+	HaltOut<=0;
+	end
+else
+	begin
 	ALUResultOut	<=ALUResultIn;
 	WriteRegOut		<=WriteRegIn;
 	WriteDataOut	<=WriteDataIn;
@@ -60,6 +72,6 @@ begin
 	MemWriteOut		<=MemWriteIn;
 	HaltOut			<=HaltIn;
 	MemOpOut			<=MemOpIn;
-end
+	end
 
 endmodule
