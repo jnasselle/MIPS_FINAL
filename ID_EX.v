@@ -32,6 +32,7 @@ module ID_EX(
 	input	ALUSrcIn,
 	input	RegWriteIn,
 	input	MemtoRegIn,
+	input MemtoRegSignIn,
 	input	MemWriteIn,
 	input [2:0] MemOpIn,
 	input	RegDstIn,
@@ -46,6 +47,7 @@ module ID_EX(
 	output reg	ALUSrcOut,
 	output reg	RegWriteOut,
 	output reg	MemtoRegOut,
+	output reg 	MemtoRegSignOut,
 	output reg	MemWriteOut,
 	output reg [2:0] MemOpOut,
 	output reg	RegDstOut,
@@ -65,6 +67,7 @@ begin
 	ALUSrcOut=0;
 	RegWriteOut=0;
 	MemtoRegOut=0;
+	MemtoRegSignOut=0;
 	MemWriteOut=0;
 	RegDstOut=0;
 	MemOpOut=0;
@@ -88,6 +91,7 @@ if(reset || clear)
 	RegDstOut<=0;
 	MemOpOut<=0;
 	HaltOut<=0;
+	MemtoRegSignOut<=0;
 	end
 else
 	begin
@@ -101,6 +105,7 @@ else
 	ALUSrcOut<=ALUSrcIn;
 	RegWriteOut<=RegWriteIn;
 	MemtoRegOut<=MemtoRegIn;
+	MemtoRegSignOut<=MemtoRegSignIn;
 	MemWriteOut<=MemWriteIn;
 	RegDstOut<=RegDstIn;
 	HaltOut<=HaltIn;

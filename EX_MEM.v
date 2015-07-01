@@ -23,6 +23,7 @@ module EX_MEM(
 	input reset,
 	input RegWriteIn,
 	input MemtoRegIn,
+	input MemtoRegSignIn,
 	input MemWriteIn,
 	input [2:0] MemOpIn,
 	input [31:0] ALUResultIn,
@@ -31,6 +32,7 @@ module EX_MEM(
 	input HaltIn,
 	output reg RegWriteOut,
 	output reg MemtoRegOut,
+	output reg MemtoRegSignOut,
 	output reg MemWriteOut,
 	output reg [2:0] MemOpOut,
 	output reg [31:0] ALUResultOut,
@@ -44,6 +46,7 @@ initial
 begin
 	RegWriteOut=0;
 	MemtoRegOut=0;
+	MemtoRegSignOut=0;
 	MemWriteOut=0;
 	ALUResultOut=0;
 	WriteRegOut=0;		
@@ -61,6 +64,7 @@ if(reset)
 	WriteRegOut<=0;		
 	WriteDataOut<=0;
 	HaltOut<=0;
+	MemtoRegSignOut<=0;
 	end
 else
 	begin
@@ -69,6 +73,7 @@ else
 	WriteDataOut	<=WriteDataIn;
 	RegWriteOut		<=RegWriteIn;
 	MemtoRegOut		<=MemtoRegIn;
+	MemtoRegSignOut<=MemtoRegSignIn;
 	MemWriteOut		<=MemWriteIn;
 	HaltOut			<=HaltIn;
 	MemOpOut			<=MemOpIn;

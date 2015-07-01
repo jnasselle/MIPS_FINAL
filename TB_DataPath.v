@@ -52,7 +52,7 @@ module TB_DataPath;
 		reset = 0;
 
 		// Wait 100 ns for global reset to finish
-		#100;
+		#500;
         
 		// Add stimulus here
 

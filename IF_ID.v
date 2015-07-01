@@ -36,9 +36,10 @@ end
 
 
 always@ (posedge clk)
-if( clear || reset )
-	instruccionOut<=0;
-else if(~enable)
+if(~enable)
+	if( clear || reset )
+		instruccionOut<=0;
+	else 
 	begin
 		instruccionOut<=instruccionIn;
 		PC4Out<= PC4In;

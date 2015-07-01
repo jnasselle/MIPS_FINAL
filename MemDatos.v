@@ -22,6 +22,7 @@ module MemDatos(
 	input clk, // input clka
 	input we,
 	input [2:0] op,
+	input signo,
 	input [31:0] addr, // input [31 : 0] addra
 	input [31:0] din, // input [31 : 0] dina
 	output reg [31:0] dout,
@@ -96,17 +97,26 @@ begin
 			endcase
 		end
 	else
-		begin
+		if(signo)
+			begin
+				case (op)
+						BYTE:
+							dout<={{24{memoria[addr][7]}},memoria[addr]};
+						HALFWORD:
+							dout<={{16{memoria[addr+1][7]}},memoria[addr+1],memoria[addr]};
+						WORD:
+							dout<={memoria[addr+3],memoria[addr+2],memoria[addr+1],memoria[addr]};
+				endcase
+			end
+		else
 			case (op)
-					BYTE:
-						dout<={{24{1'b0}},memoria[addr]};
-					HALFWORD:
-						dout<={{16{1'b0}},memoria[addr+1],memoria[addr]};
-					WORD:
-						dout<={memoria[addr+3],memoria[addr+2],memoria[addr+1],memoria[addr]};
+						BYTE:
+							dout<={{24{1'b0}},memoria[addr]};
+						HALFWORD:
+							dout<={{16{1'b0}},memoria[addr+1],memoria[addr]};
+						WORD:
+							dout<={memoria[addr+3],memoria[addr+2],memoria[addr+1],memoria[addr]};
 			endcase
-		end
-	
 end
 
 

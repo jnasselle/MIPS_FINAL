@@ -49,6 +49,7 @@ wire [31:0] ID_PC4;
 wire [31:0] ID_Instruccion;
 wire ID_RegWrite;	//Se debe escribir un registro?
 wire ID_MemToReg;	//Existe writeback?
+wire ID_MemtoRegSign;
 wire ID_MemWrite;	//Se graba la memoria de dato? 
 wire [2:0] ID_MemOp;		//Indica si la operatoria de la memoria es por byte,halfword o word
 wire [5:0] ID_ALUControl;	//Control de la ALU
@@ -56,6 +57,7 @@ wire ID_ALUSrc;	//El operando de la ALU es un reg o un imm?
 wire ID_RegDest;	//El registro destino es rd o rt?
 wire	ID_RegDst;
 wire	ID_Branch;
+wire ID_TipoBranch;
 wire [31:0] ID_RD1;
 wire [31:0] ID_RD2;
 wire [31:0] ID_ImmExtendido;
@@ -79,6 +81,7 @@ assign ID_PCSrc[1]=ID_Jump;
 
 wire EX_RegWrite;	//Se debe escribir un registro?
 wire EX_MemtoReg;	//Existe writeback?
+wire EX_MemtoRegSign;
 wire EX_MemWrite;	//Se graba la memoria de dato?
 wire [2:0] EX_MemOp;
 wire [5:0] EX_ALUControl;	//Control de la ALU
@@ -107,6 +110,7 @@ wire EX_Halt;
 
 wire MEM_RegWrite;	//Se debe escribir un registro?
 wire MEM_MemtoReg;	//Existe writeback?
+wire MEM_MemtoRegSign;
 wire MEM_MemWrite;	//Se graba la memoria de datos?
 wire [2:0] MEM_MemOp;
 wire [31:0] MEM_ALUOut;
@@ -215,10 +219,11 @@ Mux2 ID_Mux2_RD2 (
     );
 
 Equal ID_Equal (
-    .BranchD(ID_Branch), 
-    .Data1(ID_Mux2_RD1_Out), 
-    .Data2(ID_Mux2_RD2_Out), 
-    .result(ID_PCSrc[0])
+	.BranchD(ID_Branch),
+	.Tipo(ID_TipoBranch),
+	.Data1(ID_Mux2_RD1_Out), 
+	.Data2(ID_Mux2_RD2_Out), 
+	.result(ID_PCSrc[0])
     );
 
 Extension ID_Extension (
@@ -243,12 +248,14 @@ Sumador ID_Sumador (
 ControlUnit DataPath_ControlUnit (
     .Op(ID_Instruccion[31:26]), 
     .Funct(ID_Instruccion[5:0]), 
-    .MemtoReg(ID_MemtoReg), 
+    .MemtoReg(ID_MemtoReg),
+		.MemtoRegSign(ID_MemtoRegSign),
     .MemWrite(ID_MemWrite), 
     .ALUSrc(ID_ALUSrc), 
     .RegDst(ID_RegDst), 
     .RegWrite(ID_RegWrite), 
     .Branch(ID_Branch),
+	 .TipoBranch(ID_TipoBranch),
 	 .Jump(ID_Jump),
     .ALUControl(ID_ALUControl),
 	 .TipoExtension(ID_TipoExtension),
@@ -299,7 +306,8 @@ ID_EX DataPath_ID_EX (
 	.ALUControlIn(ID_ALUControl), 
 	.ALUSrcIn(ID_ALUSrc), 
 	.RegWriteIn(ID_RegWrite), 
-	.MemtoRegIn(ID_MemtoReg), 
+	.MemtoRegIn(ID_MemtoReg),
+		.MemtoRegSignIn(ID_MemtoRegSign),
 	.MemWriteIn(ID_MemWrite),
 	.MemOpIn(ID_MemOp),	
 	.RegDstIn(ID_RegDst), 
@@ -314,7 +322,8 @@ ID_EX DataPath_ID_EX (
 	.ALUControlOut(EX_ALUControl), 
 	.ALUSrcOut(EX_ALUSrc), 
 	.RegWriteOut(EX_RegWrite), 
-	.MemtoRegOut(EX_MemtoReg), 
+	.MemtoRegOut(EX_MemtoReg),
+.MemtoRegSignOut(EX_MemtoRegSign),	
 	.MemWriteOut(EX_MemWrite),
 	.MemOpOut(EX_MemOp),	
 	.RegDstOut(EX_RegDest),
@@ -377,6 +386,7 @@ EX_MEM DataPath_EX_MEM (
 	 .MemOpIn(EX_MemOp),
     .ALUResultIn(EX_ALUOut),	//Datos
     .WriteRegIn(EX_WriteReg), //Numero de Registro para writeback
+	 .MemtoRegSignIn(EX_MemtoRegSign),
     .WriteDataIn(EX_WriteData), //Datos para writeback
 	 .HaltIn(EX_Halt),
 	 //Outputs
@@ -387,6 +397,7 @@ EX_MEM DataPath_EX_MEM (
     .ALUResultOut(MEM_ALUOut), //Datos
     .WriteDataOut(MEM_WriteData),	//DATOS
     .WriteRegOut(MEM_WriteReg), //Direccion de Registro
+	 .MemtoRegSignOut(MEM_MemtoRegSign),
 	 .HaltOut(MEM_Halt)
     );
 
@@ -395,6 +406,7 @@ MemDatos MEM_MemDatos (
   .clk(clk), // input clka
   .we(MEM_MemWrite),
   .op(MEM_MemOp),
+  .signo(MEM_MemtoRegSign),
   .addr(MEM_ALUOut), // input [31 : 0] addra
   .din(MEM_WriteData), // input [31 : 0] dina
   .dout(MEM_RD), // output [31 : 0] douta

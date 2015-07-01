@@ -75,14 +75,42 @@ begin
 	//Para cortocircuitar SrcB en etapa ID evalua RtD
 	ForwardBD = (RtD != 0) && (RtD == WriteRegM) && RegWriteM;
 	
-	//Para resolver riesgos de datos LW se debe generar un stall
+	/* ===================Riesgos de Load===================
+		La unidad de riesgo examina la instruccion que se encuentra
+		en la etapa de EX.Si es un load(se ve el bit IE_MemToReg)
+		y su destino(EX_Rt o EX_WriteReg) es el mismo que el que
+		se esta en la etapa de ID, la instruccion debe ser parada en
+		ID hasta que el registro este disponible.
+		Cuando se dan las condiciones anteriormente expuestas:
+			#Se mantienen los valores viejos de IF(PC) y IF_ID(instruccion)
+			#Introducir un NOP en ID_EX (mediante CLR)
+	*/
+	
 	lwstall = ((RsD == RtE) || (RtD == RtE)) && MemToRegE;
 	
-	//Para resolver riesgo de control BEQ se puede introducir stall o predictor.
 	
-	//Para detectar stall para un branch se evalua:
+	/*===================Riesgos de Branch===================
+	Para minimizar la penalizacion que se genera al obtener la siguiente
+	instruccion a un branch,suponiendo que el branch no se va a tomar,
+	se mueve a la etapa de decodificacion la comparacion entre los registros
+	(ID_Equal), siendo entonces la penalizacion de una instruccion y no de tres
+	cuando la compracion se realizaba en la etapa EX.
+	
+	La decicion de branch en la etapa ID implica un riesgo de datos RAW ya
+	que los operandos del branch puede estar siendo computado por
+	una instruccion previa.Para solucionar dicho problema se va a 
+	cortocircuitar desde las etapas posteriores.
+	
+	*/
+	ForwardAD = (RsD != 0) && (RsD == WriteRegM) && RegWriteM;
+	ForwardBD = (RtD != 0) && (RtD == WriteRegM) && RegWriteM;
 	branchstall = (BranchD && RegWriteE && (WriteRegE == RsD || WriteRegE == RtD)) || (BranchD && MemToRegM && (WriteRegM == RsD || WriteRegM == RtD));
-	
+	/*===================Riesgos de Jump===================
+	Ya que el Jump es incondicional y es decodificado en ID,existe una
+	penalizacion ya que en la etapa IF esta la proxima instruccion(mal).
+	Ya que la la insercion de un NOP en IF_ID se hace fuera de la HazardUnit,
+	solamente se debe hacer el flush de ID_EX
+	*/
 	//Finalmente establece signals de stall por load o branch.
 	StallF = lwstall || branchstall;
 	StallD = lwstall || branchstall;

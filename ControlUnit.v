@@ -23,10 +23,12 @@ module ControlUnit(
 	input [5:0] Funct,	//Tipo de operacion en las Type-R
 	output reg MemtoReg,	//1:Para Load	,0: Resto
 	output reg MemWrite,	//1:Para Store	,0: Resto
+	output reg MemtoRegSign,
 	output reg ALUSrc,	//1:El operando es un Imm, 0: El operando es un registro
 	output reg RegDst,	//1:El WB es sobre Rt(Load y Op Imm), 0: El WB es sobre Rd (Op R)
 	output reg RegWrite,	//1:Resto ,0: Store
 	output reg Branch,	//1:Branches, 0: Resto
+	output reg TipoBranch,
 	output reg Jump,		//1:Jumps, 0:Resto
 	output reg [5:0] ALUControl, //salida en caso de ser necesario.
 	output reg TipoExtension,	//operaciones que necesitan extencion
@@ -60,6 +62,7 @@ localparam HALT = 6'b111111;
 
 always @(*)
 begin
+TipoBranch=0;
 case(Op)
 	TIPOR:
 		begin
@@ -111,24 +114,28 @@ case(Op)
 		end 
 	BEQ:
 		begin
-			ALUControl= 6'b100000;	
+			ALUControl= 6'b100000;
+			TipoExtension=1;
 			MemtoReg=0;//
 			MemWrite=0;//
 			ALUSrc=1;//
 			RegDst=0;//
 			RegWrite=0;//
+			TipoBranch=1;
 			Branch=1;
 			MemOp=3'b000;
 		end  
 	BNE:
 		begin
-			ALUControl= 6'b100000;	
+			ALUControl= 6'b100000;
+			TipoExtension=1;			
 			MemtoReg=0;//
 			MemWrite=0;//
 			ALUSrc=1;//
 			RegDst=0;//
 			RegWrite=0;//
 			Branch=1;
+			TipoBranch=0;
 			MemOp=3'b000;
 		end
 	J:
@@ -140,7 +147,9 @@ case(Op)
 	LB:
 		begin
 			ALUControl= 6'b100000;	
+			TipoExtension=1;
 			MemtoReg=1;//
+			MemtoRegSign=1;
 			MemWrite=0;
 			ALUSrc=1;
 			RegDst=0;//
@@ -150,7 +159,9 @@ case(Op)
 		end  
 	LBU:
 		begin
-			ALUControl= 6'b100001;	
+			ALUControl= 6'b100001;
+			TipoExtension=1;
+			MemtoRegSign=0;
 			MemtoReg=1;//
 			MemWrite=0;
 			ALUSrc=1;
@@ -161,7 +172,9 @@ case(Op)
 		end 
 	LH:
 		begin
-			ALUControl= 6'b100000;	
+			ALUControl= 6'b100000;
+			TipoExtension=1;
+			MemtoRegSign=1;			
 			MemtoReg=1;//
 			MemWrite=0;
 			ALUSrc=1;
@@ -172,7 +185,9 @@ case(Op)
 		end 
 	LHU:
 		begin
-			ALUControl= 6'b100001;	
+			ALUControl= 6'b100001;
+			TipoExtension=1;
+			MemtoRegSign=0;
 			MemtoReg=1;//
 			MemWrite=0;
 			ALUSrc=1;
@@ -183,7 +198,7 @@ case(Op)
 		end 
 	LUI:
 		begin
-			ALUControl= 6'b000000;	
+			ALUControl= 6'b000000;
 			MemtoReg=1;//
 			MemWrite=0;
 			ALUSrc=1;
@@ -194,8 +209,10 @@ case(Op)
 		end 
 	LW:
 		begin
-			ALUControl= 6'b100000;	
+			ALUControl= 6'b100000;
+			TipoExtension=1;
 			MemtoReg=1;//
+			MemtoRegSign=1;
 			MemWrite=0;
 			ALUSrc=1;
 			RegDst=0;//
@@ -205,8 +222,10 @@ case(Op)
 		end 
 	LWU:
 		begin
-			ALUControl= 6'b100001;	
+			ALUControl= 6'b100001;
+			TipoExtension=1;			
 			MemtoReg=1;//
+			MemtoRegSign=0;
 			MemWrite=0;
 			ALUSrc=1;
 			RegDst=0;//
@@ -228,7 +247,8 @@ case(Op)
 		end 
 	SB:
 		begin
-			ALUControl= 6'b100000;	
+			ALUControl= 6'b100000;
+			TipoExtension=1;			
 			MemtoReg=0;//
 			MemWrite=1;
 			ALUSrc=1;
@@ -241,6 +261,7 @@ case(Op)
 		begin
 			ALUControl= 6'b100000;	
 			MemtoReg=0;//
+			TipoExtension=1;
 			MemWrite=1;
 			ALUSrc=1;
 			RegDst=0;//
@@ -274,7 +295,8 @@ case(Op)
 		end  
 	SW:
 		begin
-			ALUControl= 6'b100000;	
+			ALUControl= 6'b100000;
+			TipoExtension=1;
 			MemtoReg=0;//
 			MemWrite=1;
 			ALUSrc=1;
