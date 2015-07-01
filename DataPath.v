@@ -205,7 +205,7 @@ Registros ID_Registros (
 
 Mux2 ID_Mux2_RD1 (
     .in0(ID_RD1), 
-    .in1(EX_ALUOut),
+    .in1(MEM_ALUOut),
     .out(ID_Mux2_RD1_Out),
     .sel(ID_ForwardA)
     );
@@ -213,7 +213,7 @@ Mux2 ID_Mux2_RD1 (
 
 Mux2 ID_Mux2_RD2 (
     .in0(ID_RD2), 
-    .in1(EX_ALUOut),
+    .in1(MEM_ALUOut),
     .out(ID_Mux2_RD2_Out),
     .sel(ID_ForwardB)
     );
