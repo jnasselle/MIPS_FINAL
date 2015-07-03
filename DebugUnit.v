@@ -24,12 +24,12 @@ module DebugUnit(
 	
 	//Entradas desde UART
 	input wire rx_rdy,	//rx-ready que llego un mensaje
-	//input wire tx_done_tick,
+	input wire tx_done,
 	input wire [7:0] rx_bus,
 	
 	//Entradas desde DataPath
-	input [1375:0] DataPath_bus,
-	input halt_in,
+	input [23:0]dp_bus,
+	input dp_halt,
 	 
 	//Salidas para DataPath
 	output reg Datapath_clk,
@@ -51,81 +51,92 @@ module DebugUnit(
 	parameter SEND = 7'b0010000;
 	parameter SENDING = 7'b0100000;
 	parameter FIN = 7'b1000000;
+	parameter BYTES=3;
 	
 	//reg [6:0] state = IDLE;
 	reg [6:0] next_state = IDLE;
 	reg [6:0] current_state=IDLE;
 
-//logica de entrada
-
 	
-//logica de cambio de estado
-always @*
+//Actualizacion de estado y salidas, asignacion sincrona
+always @(posedge clk)
 	begin		
 		case (current_state)
-		
-			IDLE: 
+			
+			IDLE:
 			begin
 				contador=0;
-				if(rx_rdy==1)
-					begin
-						if(rx_bus==1)
-							Datapath_clk=0;
-							next_state=PAP1;
-						else
-							next_state=CONT;
-					end
-				 else
-					next_state=IDLE;
-			end
-			
-			PAP1: 
-			begin
-				next_state=PAP2;
-				Datapath_clk=1;
-			end
-			
-			PAP1: 
-			begin
-				next_state=SEND;
 				Datapath_clk=0;
-			end	
+				if(rx_rdy==1)
+				begin
+					if(rx_bus==8'b01110000)
+					begin
+						next_state=PAP1;
+					end
+					if(rx_bus==8'b01100011)
+					begin
+						next_state=CONT;
+					end
+				end
+				else
+				next_state=IDLE;
+			end
+			
+			PAP1:
+			begin
+				Datapath_clk=1;
+				next_state=SEND;
+			end
+			
+			PAP2:
+			begin
+				Datapath_clk=0;
+				next_state=SEND;
+			end
 			
 			CONT: 
 			begin
-				if(halt_in==1)
-					begin
-						next_state=SEND;
-					end
+				Datapath_clk=~Datapath_clk;
+				tx_write=0;
+				tx_bus=0;
+				
+				if(dp_halt==1)
+				begin
+					next_state=SEND;
+				end
 				else
-					begin
-						next_state=CONT;
-						Datapath_clk=~Datapath_clk;
-					end
+				begin
+					next_state=CONT;
+				end
 			end
+			
+			
 			
 			SEND: 
 			begin
-				if(halt_in==1)
-					if(contador!=175)
-						begin 
-							next_state=SENDING;
-							tx_write=1;
-							contador=contador+1;
-							tx_bus=8'b11111111; //case
-						end
+
+				tx_bus = dp_bus[contador*8 +: 8];
+
+				if(dp_halt==1)
+				begin
+					if(contador!=BYTES)
+					begin
+						next_state=SENDING;
+						tx_write=1;
+						contador=contador+1;
+					end
 					else
-						begin
+					begin
 						next_state=FIN;
 						tx_write=0;
-						end
+					end
+				end
 				else
-					if(contador!=175)
+					if(contador!=BYTES)
 						begin 
 							contador=contador+1;
 							next_state=SENDING;
 							tx_write=1;
-							tx_bus=8'b10101010; //case
 						end
 					else
 						begin
@@ -134,27 +145,29 @@ always @*
 						end
 			end
 			
-			SENDING: 
+			SENDING:
 			begin
-				if(tx_done==0)
-				begin
-					next_state=SENDING;
-				end
-				else
+				tx_write=0;
+				if(tx_done==1)
 				begin
 					next_state=SEND;
+				end
 				else
+				next_state=SENDING;
 			end
-			
-			
 			
 			FIN: 
 			begin
 				next_state=FIN;
 				contador=0;
 			end
-
-						
+			
+			default: 
+			begin
+				next_state=FIN;
+				contador=0;
+			end
+			
 		endcase
 		current_state<=next_state;
 	end

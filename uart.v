@@ -39,7 +39,7 @@ module uart
 	uart_tx 
 	#(.data_bits(data_bits), .stop_bit_ticks(stop_bit_ticks)) 
 	uart_tx_unit
-	(.clock(clk), .reset(rst), .s_tick(tick), .tx_start(tx_start), .tx_done_tick(tx_done), .data_in(8'b1100001), .tx(tx));
+	(.clock(clk), .reset(rst), .s_tick(tick), .tx_start(tx_start), .tx_done_tick(tx_done), .data_in(w_data), .tx(tx));
 
 /*
 					
@@ -58,6 +58,6 @@ module uart
 */
  
 
-assign led = rx_data_out;
+//assign led = rx_data_out;
  
 endmodule
