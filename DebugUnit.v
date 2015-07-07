@@ -28,7 +28,7 @@ module DebugUnit(
 	input wire [7:0] rx_bus,
 	
 	//Entradas desde DataPath
-	input [23:0]dp_bus,
+	input [1619:0] dp_bus,
 	input dp_halt,
 	 
 	//Salidas para DataPath
@@ -51,7 +51,7 @@ module DebugUnit(
 	parameter SEND = 7'b0010000;
 	parameter SENDING = 7'b0100000;
 	parameter FIN = 7'b1000000;
-	parameter BYTES=3;
+	parameter BYTES=203;
 	
 	//reg [6:0] state = IDLE;
 	reg [6:0] next_state = IDLE;

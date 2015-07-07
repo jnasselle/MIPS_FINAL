@@ -24,7 +24,9 @@ module DataPath(
 	output [1023:0] du_reg,
 	output [255:0] du_mem,
 	output [63:0] du_if_id,
-	output [125:0] du_id_ex,
+	output [126:0] du_id_ex,
+	output [76:0] du_ex_mem,
+	output [71:0] du_mem_wb,
 	output du_halt
 	);
 
@@ -446,22 +448,51 @@ Mux2 WB_Mux2_MemToReg (
 /*
 	WIRES PARA DEBUG UNIT
 */
-assign du_if_id = {ID_Instruccion,ID_PC4};
-assign du_id_ex = {
-	EX_RD1, 
-	EX_RD2, 
-	EX_ImmExtendido, 
-	EX_Rs, 
-	EX_Rt, 
-	EX_Rd, 
-	EX_ALUControl, 
-	EX_ALUSrc, 
-	EX_RegWrite, 
-	EX_MemtoReg, 
-	EX_MemWrite,
-	EX_MemOp,	
-	EX_RegDest,
-	EX_Halt
+assign du_if_id = {ID_Instruccion,ID_PC4}; //64
+
+
+
+assign du_id_ex = {	//127
+EX_RD1,				//32 
+EX_RD2, 				//32
+EX_ImmExtendido, 	//32
+EX_Rs, 				//5
+EX_Rt, 				//5 
+EX_Rd, 				//5 
+EX_ALUControl, 	//6
+EX_ALUSrc, 			//1
+EX_RegWrite, 		//1
+EX_MemtoReg, 		//1
+EX_MemtoRegSign, 	//1	
+EX_MemWrite,		//1
+EX_MemOp,			//3
+EX_RegDest,			//1
+EX_Halt				//1
+};
+
+assign du_ex_mem={	//77
+MEM_RegWrite, 		//1
+MEM_MemtoReg, 		//1
+MEM_MemWrite, 		//1
+MEM_MemOp,			//3
+MEM_ALUOut, 		//32
+MEM_WriteData,		//32
+MEM_WriteReg, 		//5
+MEM_MemtoRegSign, //1
+MEM_Halt				//1
+};
+
+
+
+
+
+assign du_mem_wb={	//72
+WB_ReadData, 	//32
+WB_ALUOut, 		//32
+WB_WriteReg, 	//5
+WB_RegWrite, 	//1
+WB_MemToReg,	//1
+WB_Halt			//1
 };
 
 assign du_halt=WB_Halt;
