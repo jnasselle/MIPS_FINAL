@@ -35,7 +35,7 @@ wire TOP_tx_done;
 wire [7:0] TOP_rx_data;
 wire [7:0] TOP_tx_data;
 wire TOP_halt;
-wire [1619:0] TOP_DataPath_bus;
+wire [1623:0] TOP_DataPath_bus;
 wire TOP_DataPath_clk;
 
 
@@ -52,7 +52,8 @@ assign TOP_DataPath_bus = {
 	du_if_id,
 	du_id_ex,
 	du_ex_mem,
-	du_mem_wb
+	du_mem_wb,
+	4'b0
 };
 	 
 // Instantiate UART
@@ -76,14 +77,14 @@ DebugUnit TOP_DebugUnit (
     .rx_bus(TOP_rx_data), 
     .dp_bus(TOP_DataPath_bus), 
     .dp_halt(TOP_halt), 
-    .Datapath_clk(Datapath_clk), 
+    .Datapath_clk(TOP_DataPath_clk), 
     .tx_write(TOP_tx_start), 
     .tx_bus(TOP_tx_data)
     );
  
 DataPath TOP_DataPath (
-    .clk(clk), 
-    .reset(reset), 
+    .clk(TOP_DataPath_clk), 
+    .reset(rst), 
     .du_reg(du_reg), 
     .du_mem(du_mem), 
     .du_if_id(du_if_id), 

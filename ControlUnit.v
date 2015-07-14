@@ -33,7 +33,7 @@ module ControlUnit(
 	output reg [5:0] ALUControl, //salida en caso de ser necesario.
 	output reg TipoExtension,	//operaciones que necesitan extencion
 	output reg [2:0] MemOp,
-	output reg Halt=0
+	output reg Halt
    );
 	
 localparam TIPOR = 6'b000000;
@@ -66,279 +66,356 @@ TipoBranch=0;
 case(Op)
 	TIPOR:
 		begin
-			ALUControl=Funct;	
-			MemtoReg=0;
-			MemWrite=0;
-			ALUSrc=0;
-			RegDst=1;
-			RegWrite=1;
-			Branch=0;
-			Jump=0;	
-			MemOp=3'b000;
+		MemtoReg=0;
+		MemWrite=0;
+		MemtoRegSign=0;
+		ALUSrc=0;
+		RegDst=1;
+		RegWrite=1;
+		Branch=0;
+		TipoBranch=0;
+		Jump=0;
+		ALUControl=Funct;
+		TipoExtension=0;
+		MemOp=3'b000;
+		Halt=0;
 		end
 	ADDI:
 		begin
-			ALUControl= 6'b100000;	
-			MemtoReg=0;
-			MemWrite=0;
-			ALUSrc=1;
-			RegDst=0;//
-			RegWrite=1;
-			Branch=0;
-			TipoExtension=1;
-			MemOp=3'b000;
+		MemtoReg=0;
+		MemWrite=0;
+		MemtoRegSign=0;
+		ALUSrc=1;
+		RegDst=0;
+		RegWrite=1;
+		Branch=0;
+		TipoBranch=0;
+		Jump=0;
+		ALUControl=6'b100000;
+		TipoExtension=1;
+		MemOp=3'b000;
+		Halt=0;
 		end
 	ADDIU:
 		begin
-			ALUControl= 6'b100001;	
-			MemtoReg=0;
-			MemWrite=0;
-			ALUSrc=1;
-			RegDst=0;//
-			RegWrite=1;
-			Branch=0;
-			TipoExtension=1;
-			MemOp=3'b000;
+		MemtoReg=0;
+		MemWrite=0;
+		MemtoRegSign=0;
+		ALUSrc=1;
+		RegDst=0;
+		RegWrite=1;
+		Branch=0;
+		TipoBranch=0;
+		Jump=0;
+		ALUControl=6'b100000;
+		TipoExtension=1;
+		MemOp=3'b000;
+		Halt=0;
 		end 
 	ANDI:
 		begin
-			ALUControl= 6'b100100;	
-			MemtoReg=0;
-			MemWrite=0;
-			ALUSrc=1;
-			RegDst=0;//
-			RegWrite=1;
-			Branch=0;
-			TipoExtension=0;
-			MemOp=3'b000;
+		MemtoReg=0;
+		MemWrite=0;
+		MemtoRegSign=0;
+		ALUSrc=1;
+		RegDst=0;
+		RegWrite=1;
+		Branch=0;
+		TipoBranch=0;
+		Jump=0;
+		ALUControl=6'b100100;
+		TipoExtension=0;
+		MemOp=3'b000;
+		Halt=0;
 		end 
 	BEQ:
 		begin
-			ALUControl= 6'b100000;
-			TipoExtension=1;
-			MemtoReg=0;//
-			MemWrite=0;//
-			ALUSrc=1;//
-			RegDst=0;//
-			RegWrite=0;//
-			TipoBranch=1;
-			Branch=1;
-			MemOp=3'b000;
+		MemtoReg=0;
+		MemWrite=0;
+		MemtoRegSign=0;
+		ALUSrc=1;
+		RegDst=0;
+		RegWrite=0;
+		Branch=1;
+		TipoBranch=1;
+		Jump=0;
+		ALUControl=6'b100000;
+		TipoExtension=1;
+		MemOp=3'b000;
+		Halt=0;
 		end  
 	BNE:
 		begin
-			ALUControl= 6'b100000;
-			TipoExtension=1;			
-			MemtoReg=0;//
-			MemWrite=0;//
-			ALUSrc=1;//
-			RegDst=0;//
-			RegWrite=0;//
-			Branch=1;
-			TipoBranch=0;
-			MemOp=3'b000;
+		MemtoReg=0;
+		MemWrite=0;
+		MemtoRegSign=0;
+		ALUSrc=1;
+		RegDst=0;
+		RegWrite=0;
+		Branch=1;
+		TipoBranch=0;
+		Jump=0;
+		ALUControl=6'b100000;
+		TipoExtension=1;
+		MemOp=3'b000;
+		Halt=0;
 		end
 	J:
 		begin
-			Jump=1;
-			MemWrite=0;
-			RegWrite=0;
+		MemtoReg=0;
+		MemWrite=0;
+		MemtoRegSign=0;
+		ALUSrc=0;
+		RegDst=0;
+		RegWrite=0;
+		Branch=0;
+		TipoBranch=0;
+		Jump=1;
+		ALUControl=6'b000000;
+		TipoExtension=0;
+		MemOp=3'b000;
+		Halt=0;
 		end
 	LB:
 		begin
-			ALUControl= 6'b100000;	
-			TipoExtension=1;
-			MemtoReg=1;//
-			MemtoRegSign=1;
-			MemWrite=0;
-			ALUSrc=1;
-			RegDst=0;//
-			RegWrite=1;
-			Branch=0;
-			MemOp=3'b001;
+		MemtoReg=1;
+		MemWrite=0;
+		MemtoRegSign=1;
+		ALUSrc=1;
+		RegDst=0;
+		RegWrite=1;
+		Branch=0;
+		TipoBranch=0;
+		Jump=0;
+		ALUControl=6'b100000;
+		TipoExtension=1;
+		MemOp=3'b001;
+		Halt=0;
 		end  
 	LBU:
 		begin
-			ALUControl= 6'b100001;
-			TipoExtension=1;
-			MemtoRegSign=0;
-			MemtoReg=1;//
-			MemWrite=0;
-			ALUSrc=1;
-			RegDst=0;//
-			RegWrite=1;
-			Branch=0;
-			MemOp=3'b001;
-		end 
+		MemtoReg=1;
+		MemWrite=0;
+		MemtoRegSign=0;
+		ALUSrc=1;
+		RegDst=0;
+		RegWrite=1;
+		Branch=0;
+		TipoBranch=0;
+		Jump=0;
+		ALUControl=6'b100000;
+		TipoExtension=1;
+		MemOp=3'b001;
+		Halt=0;
+		end  
 	LH:
 		begin
-			ALUControl= 6'b100000;
-			TipoExtension=1;
-			MemtoRegSign=1;			
-			MemtoReg=1;//
-			MemWrite=0;
-			ALUSrc=1;
-			RegDst=0;//
-			RegWrite=1;
-			Branch=0;
-			MemOp=3'b010;
-		end 
+		MemtoReg=1;
+		MemWrite=0;
+		MemtoRegSign=1;
+		ALUSrc=1;
+		RegDst=0;
+		RegWrite=1;
+		Branch=0;
+		TipoBranch=0;
+		Jump=0;
+		ALUControl=6'b100000;
+		TipoExtension=1;
+		MemOp=3'b010;
+		Halt=0;
+		end  
 	LHU:
 		begin
-			ALUControl= 6'b100001;
-			TipoExtension=1;
-			MemtoRegSign=0;
-			MemtoReg=1;//
-			MemWrite=0;
-			ALUSrc=1;
-			RegDst=0;//
-			RegWrite=1;
-			Branch=0;
-			MemOp=3'b010;
-		end 
-	LUI:
-		begin
-			ALUControl= 6'b000000;
-			MemtoReg=1;//
-			MemWrite=0;
-			ALUSrc=1;
-			RegDst=0;//
-			RegWrite=1;
-			Branch=0;
-			MemOp=3'b000;
-		end 
+		MemtoReg=1;
+		MemWrite=0;
+		MemtoRegSign=0;
+		ALUSrc=1;
+		RegDst=0;
+		RegWrite=1;
+		Branch=0;
+		TipoBranch=0;
+		Jump=0;
+		ALUControl=6'b100000;
+		TipoExtension=1;
+		MemOp=3'b010;
+		Halt=0;
+		end  
 	LW:
 		begin
-			ALUControl= 6'b100000;
-			TipoExtension=1;
-			MemtoReg=1;//
-			MemtoRegSign=1;
-			MemWrite=0;
-			ALUSrc=1;
-			RegDst=0;//
-			RegWrite=1;
-			Branch=0;
-			MemOp=3'b100;
-		end 
+		MemtoReg=1;
+		MemWrite=0;
+		MemtoRegSign=1;
+		ALUSrc=1;
+		RegDst=0;
+		RegWrite=1;
+		Branch=0;
+		TipoBranch=0;
+		Jump=0;
+		ALUControl=6'b100000;
+		TipoExtension=1;
+		MemOp=3'b100;
+		Halt=0;
+		end  
 	LWU:
 		begin
-			ALUControl= 6'b100001;
-			TipoExtension=1;			
-			MemtoReg=1;//
-			MemtoRegSign=0;
-			MemWrite=0;
-			ALUSrc=1;
-			RegDst=0;//
-			RegWrite=1;
-			Branch=0;
-			MemOp=3'b100;
-		end 
+		MemtoReg=1;
+		MemWrite=0;
+		MemtoRegSign=0;
+		ALUSrc=1;
+		RegDst=0;
+		RegWrite=1;
+		Branch=0;
+		TipoBranch=0;
+		Jump=0;
+		ALUControl=6'b100000;
+		TipoExtension=1;
+		MemOp=3'b100;
+		Halt=0;
+		end  
 	ORI:
 		begin
-			ALUControl= 6'b100101;	
-			MemtoReg=0;//
-			MemWrite=0;
-			ALUSrc=1;
-			RegDst=0;//
-			RegWrite=1;
-			Branch=0;
-			TipoExtension=0;
-			MemOp=3'b000;
-		end 
+		MemtoReg=0;
+		MemWrite=0;
+		MemtoRegSign=0;
+		ALUSrc=1;
+		RegDst=0;
+		RegWrite=1;
+		Branch=0;
+		TipoBranch=0;
+		Jump=0;
+		ALUControl=6'b100101;
+		TipoExtension=0;
+		MemOp=3'b000;
+		Halt=0;
+		end
 	SB:
 		begin
-			ALUControl= 6'b100000;
-			TipoExtension=1;			
-			MemtoReg=0;//
-			MemWrite=1;
-			ALUSrc=1;
-			RegDst=0;// es intistinto ya que no se activa RegWrite
-			RegWrite=0;
-			Branch=0;
-			MemOp=3'b001;
+		MemtoReg=0;
+		MemWrite=1;
+		MemtoRegSign=0;
+		ALUSrc=1;
+		RegDst=0;
+		RegWrite=0;
+		Branch=0;
+		TipoBranch=0;
+		Jump=0;
+		ALUControl=6'b100000;
+		TipoExtension=1;
+		MemOp=3'b001;
+		Halt=0;
 		end 
 	SH:
 		begin
-			ALUControl= 6'b100000;	
-			MemtoReg=0;//
-			TipoExtension=1;
-			MemWrite=1;
-			ALUSrc=1;
-			RegDst=0;//
-			RegWrite=0;
-			Branch=0;
-			MemOp=3'b010;
+		MemtoReg=0;
+		MemWrite=1;
+		MemtoRegSign=0;
+		ALUSrc=1;
+		RegDst=0;
+		RegWrite=0;
+		Branch=0;
+		TipoBranch=0;
+		Jump=0;
+		ALUControl=6'b100000;
+		TipoExtension=1;
+		MemOp=3'b010;
+		Halt=0;
 		end
 	SLTI:
 		begin
-			ALUControl= 6'b101010;	
-			MemtoReg=0;//
-			MemWrite=0;
-			ALUSrc=1;
-			RegDst=0;//
-			RegWrite=1;
-			Branch=0;
-			TipoExtension=1;
-			MemOp=3'b000;
+		MemtoReg=0;
+		MemWrite=0;
+		MemtoRegSign=0;
+		ALUSrc=1;
+		RegDst=0;
+		RegWrite=1;
+		Branch=0;
+		TipoBranch=0;
+		Jump=0;
+		ALUControl=6'b101010;
+		TipoExtension=1;
+		MemOp=3'b000;
+		Halt=0;
 		end  
 	SLTIU:
 		begin
-			ALUControl= 6'b101011;	
-			MemtoReg=0;//
-			MemWrite=0;
-			ALUSrc=1;
-			RegDst=0;//
-			RegWrite=0;
-			Branch=0;
-			TipoExtension=1;
-			MemOp=3'b000;
+		MemtoReg=0;
+		MemWrite=0;
+		MemtoRegSign=0;
+		ALUSrc=1;
+		RegDst=0;
+		RegWrite=1;
+		Branch=0;
+		TipoBranch=0;
+		Jump=0;
+		ALUControl=6'b101010;
+		TipoExtension=1;
+		MemOp=3'b000;
+		Halt=0;
 		end  
 	SW:
 		begin
-			ALUControl= 6'b100000;
-			TipoExtension=1;
-			MemtoReg=0;//
-			MemWrite=1;
-			ALUSrc=1;
-			RegDst=0;//
-			RegWrite=0; 
-			Branch=0;
-			MemOp=3'b100;
+		MemtoReg=0;
+		MemWrite=1;
+		MemtoRegSign=0;
+		ALUSrc=1;
+		RegDst=0;
+		RegWrite=0;
+		Branch=0;
+		TipoBranch=0;
+		Jump=0;
+		ALUControl=6'b100000;
+		TipoExtension=1;
+		MemOp=3'b100;
+		Halt=0;
 		end
 	XORI:
 		begin
-			ALUControl= 6'b100110;	
-			MemtoReg=0;//
-			MemWrite=0;
-			ALUSrc=1;
-			RegDst=1;//
-			RegWrite=1;
-			Branch=0;
-			TipoExtension=0;
-			MemOp=3'b000;
+		MemtoReg=0;
+		MemWrite=0;
+		MemtoRegSign=0;
+		ALUSrc=1;
+		RegDst=1;
+		RegWrite=1;
+		Branch=0;
+		TipoBranch=0;
+		Jump=0;
+		ALUControl=6'b100110;
+		TipoExtension=0;
+		MemOp=3'b000;
+		Halt=0;
 		end
 	HALT:
+	
 		begin
-			ALUControl=6'b000000;	
-			MemtoReg=0;
-			MemWrite=0;
-			ALUSrc=0;
-			RegDst=1;
-			RegWrite=1;
-			Branch=0;
-			Halt=1;
-			MemOp=3'b000;
+		MemtoReg=0;
+		MemWrite=0;
+		MemtoRegSign=0;
+		ALUSrc=0;
+		RegDst=0;
+		RegWrite=0;
+		Branch=0;
+		TipoBranch=0;
+		Jump=0;
+		ALUControl=6'b000000;
+		TipoExtension=0;
+		MemOp=3'b000;
+		Halt=1;
 		end
 	default: //NOP
 		begin
-			ALUControl= 6'b000000;	
-			MemtoReg=0;//
-			MemWrite=0;
-			ALUSrc=0;
-			RegDst=0;//
-			RegWrite=0;
-			Branch=0;
-			MemOp=3'b000;
+		MemtoReg=0;
+		MemWrite=0;
+		MemtoRegSign=0;
+		ALUSrc=0;
+		RegDst=0;
+		RegWrite=0;
+		Branch=0;
+		TipoBranch=0;
+		Jump=0;
+		ALUControl=6'b000000;
+		TipoExtension=0;
+		MemOp=3'b000;
+		Halt=0;
 		end
 endcase	
 end		

@@ -28,7 +28,7 @@ module DebugUnit(
 	input wire [7:0] rx_bus,
 	
 	//Entradas desde DataPath
-	input [1619:0] dp_bus,
+	input [1623:0] dp_bus,
 	input dp_halt,
 	 
 	//Salidas para DataPath
