@@ -39,7 +39,12 @@ module DebugUnit(
 	output reg tx_write,		//WR para que mande a la cola el nuevo daato
 	output reg [7:0] tx_bus		//ver bien
 	);
-	 
+	
+	initial
+	begin
+	Datapath_clk=1;
+	end
+		
 	reg [1375:0] datos = 0;
 	reg [7:0] contador = 0;
 	//reg [5:0] contador_fin = 0;
