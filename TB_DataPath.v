@@ -4,7 +4,7 @@
 // Company: 
 // Engineer:
 //
-// Create Date:   10:03:36 06/29/2015
+// Create Date:   15:31:17 07/15/2015
 // Design Name:   DataPath
 // Module Name:   /home/jnasselle/Facu/Arquitectura_de_Computadoras/FINAL/TB_DataPath.v
 // Project Name:  FINAL
@@ -32,7 +32,9 @@ module TB_DataPath;
 	wire [1023:0] du_reg;
 	wire [255:0] du_mem;
 	wire [63:0] du_if_id;
-	wire [125:0] du_id_ex;
+	wire [126:0] du_id_ex;
+	wire [76:0] du_ex_mem;
+	wire [71:0] du_mem_wb;
 	wire du_halt;
 
 	// Instantiate the Unit Under Test (UUT)
@@ -43,6 +45,8 @@ module TB_DataPath;
 		.du_mem(du_mem), 
 		.du_if_id(du_if_id), 
 		.du_id_ex(du_id_ex), 
+		.du_ex_mem(du_ex_mem), 
+		.du_mem_wb(du_mem_wb), 
 		.du_halt(du_halt)
 	);
 
@@ -52,13 +56,13 @@ module TB_DataPath;
 		reset = 0;
 
 		// Wait 100 ns for global reset to finish
-		#500;
+		#100;
         
 		// Add stimulus here
 
 	end
 	always
-	#10 clk=~clk;
+	#5 clk=~clk;
       
 endmodule
 

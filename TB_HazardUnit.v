@@ -4,7 +4,7 @@
 // Company: 
 // Engineer:
 //
-// Create Date:   13:43:32 06/10/2015
+// Create Date:   15:37:07 07/15/2015
 // Design Name:   HazardUnit
 // Module Name:   /home/jnasselle/Facu/Arquitectura_de_Computadoras/FINAL/TB_HazardUnit.v
 // Project Name:  FINAL
@@ -38,6 +38,7 @@ module TB_HazardUnit;
 	reg MemToRegE;
 	reg MemToRegM;
 	reg BranchD;
+	reg JumpD;
 
 	// Outputs
 	wire StallF;
@@ -63,6 +64,7 @@ module TB_HazardUnit;
 		.MemToRegE(MemToRegE), 
 		.MemToRegM(MemToRegM), 
 		.BranchD(BranchD), 
+		.JumpD(JumpD), 
 		.StallF(StallF), 
 		.StallD(StallD), 
 		.ForwardAD(ForwardAD), 
@@ -87,20 +89,12 @@ module TB_HazardUnit;
 		MemToRegE = 0;
 		MemToRegM = 0;
 		BranchD = 0;
+		JumpD = 0;
 
 		// Wait 100 ns for global reset to finish
 		#100;
         
 		// Add stimulus here
-		#10
-		RtE=2;
-		WriteRegM=2;
-		RegWriteM=1;
-		RsE=1;
-		WriteRegW=1;
-		RegWriteW=1;
-		
-		
 
 	end
       
