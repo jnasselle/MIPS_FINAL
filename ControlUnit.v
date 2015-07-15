@@ -62,7 +62,6 @@ localparam HALT = 6'b111111;
 
 always @(*)
 begin
-TipoBranch=0;
 case(Op)
 	TIPOR:
 		begin
